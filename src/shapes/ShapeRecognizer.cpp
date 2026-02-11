@@ -1,9 +1,13 @@
 #include "ShapeRecognizer.h"
 
 #include <QtMath>
-
 #include <QDataStream>
 #include <QLineF>
+#include <QIODevice>
+#include <QPainterPath>
+#include <algorithm>
+
+// --- Helper Functions ---
 
 static QPointF centroid(const QVector<StrokePoint>& pts) {
   QPointF c(0, 0);
@@ -49,7 +53,6 @@ static bool isClosedish(const QVector<StrokePoint>& pts, double eps) {
 }
 
 static double lineFitError(const QVector<StrokePoint>& pts, const QLineF& line) {
-  // Mean orthogonal distance to the infinite line.
   if (pts.size() < 2) return 1e9;
   const QPointF a = line.p1();
   const QPointF b = line.p2();
@@ -67,6 +70,8 @@ static double lineFitError(const QVector<StrokePoint>& pts, const QLineF& line) 
   return sum / pts.size();
 }
 
+// --- Specific Shape Matchers ---
+
 static ShapeMatch matchLine(const Stroke& s) {
   ShapeMatch m;
   if (s.pts.size() < 2) return m;
@@ -79,9 +84,8 @@ static ShapeMatch matchLine(const Stroke& s) {
   const QLineF line(p0, p1);
   const double err = lineFitError(s.pts, line);
 
-  // Normalize error by length.
   const double normErr = err / std::max(1.0, len);
-  if (normErr > 0.02) return m;  // tolerant threshold
+  if (normErr > 0.02) return m; 
 
   m.matched = true;
   m.type = "line";
@@ -112,11 +116,9 @@ static ShapeMatch matchCircle(const Stroke& s) {
   const double r = meanRadius(s.pts, c, &stddev);
   if (r <= 0) return m;
 
-  // Require roughly circular bbox.
   const double aspect = b.width() / std::max(1e-6, b.height());
   if (aspect < 0.75 || aspect > 1.33) return m;
 
-  // Require near-closure.
   const double closeEps = std::max(12.0, r * 0.20);
   if (!isClosedish(s.pts, closeEps)) return m;
 
@@ -149,7 +151,6 @@ static ShapeMatch matchRect(const Stroke& s) {
   const double closeEps = std::max(12.0, std::min(b.width(), b.height()) * 0.15);
   if (!isClosedish(s.pts, closeEps)) return m;
 
-  // Heuristic: if most points lie close to any of the 4 bbox edges.
   const double tol = std::min(b.width(), b.height()) * 0.06;
   int nearEdge = 0;
   for (const auto& p : s.pts) {
@@ -179,8 +180,9 @@ static ShapeMatch matchRect(const Stroke& s) {
   return m;
 }
 
+// --- Public Interface ---
+
 ShapeMatch ShapeRecognizer::recognize(const Stroke& stroke) {
-  // Order matters: lines are common and easy to false-positive, so require stronger fit.
   ShapeMatch best;
 
   auto consider = [&](const ShapeMatch& m) {

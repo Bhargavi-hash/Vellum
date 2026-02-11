@@ -1,0 +1,4 @@
+/home/bhargavi/Documents/Vellum/build/CMakeFiles/vellum.dir
+/home/bhargavi/Documents/Vellum/build/CMakeFiles/edit_cache.dir
+/home/bhargavi/Documents/Vellum/build/CMakeFiles/rebuild_cache.dir
+/home/bhargavi/Documents/Vellum/build/CMakeFiles/vellum_autogen.dir

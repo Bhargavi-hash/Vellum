@@ -1,12 +1,13 @@
 #include "PdfExporter.h"
 
 #include <QtMath>
-
 #include <QDataStream>
 #include <QFile>
 #include <QPainter>
 #include <QPdfWriter>
 #include <QTextDocument>
+#include <QPageSize>
+#include <QPen>
 
 #include "model/Document.h"
 
@@ -44,8 +45,9 @@ void drawStrokeWorld(QPainter& p, const Stroke& s) {
   if (s.isShape && !s.shapeType.isEmpty()) {
     float avg = 0.0f;
     for (const auto& pt : s.pts) avg += pt.pressure;
-    avg /= std::max(1, s.pts.size());
-    pen.setWidthF(std::max(0.5, s.baseWidthPoints * avg));
+    // Cast 1 to double to match s.pts.size() type
+    avg /= std::max(1.0, static_cast<double>(s.pts.size()));
+    pen.setWidthF(std::max(0.5, s.baseWidthPoints * static_cast<double>(avg)));
     p.setPen(pen);
 
     if (s.shapeType == "line") {
@@ -79,7 +81,7 @@ void drawStrokeWorld(QPainter& p, const Stroke& s) {
     const auto& a = s.pts[i - 1];
     const auto& b = s.pts[i];
     const float pr = (a.pressure + b.pressure) * 0.5f;
-    pen.setWidthF(std::max(0.5, s.baseWidthPoints * pr));
+    pen.setWidthF(std::max(0.5, s.baseWidthPoints * static_cast<double>(pr)));
     p.setPen(pen);
     p.drawLine(a.worldPos, b.worldPos);
   }
@@ -119,7 +121,6 @@ bool PdfExporter::exportToPdf(const QString& path, const Document& doc, const QR
     for (int page = 0; page <= lastPage; ++page) {
       if (page != 0) writer.newPage();
 
-      // World-to-page: page rect in world is (0, page*stride) .. (kA4W, page*stride+kA4H)
       p.save();
       p.translate(0, -page * stride);
 
@@ -136,10 +137,9 @@ bool PdfExporter::exportToPdf(const QString& path, const Document& doc, const QR
     return true;
   }
 
-  // Infinite mode: export the provided viewportWorld onto a single A4 page.
+  // Infinite mode: export current viewport to one page
   const QRectF vp = viewportWorld.isValid() ? viewportWorld : docContentBoundsWorld(doc);
 
-  // Fit viewport to page with small margins.
   const double margin = 24.0;
   const QRectF pageRect(margin, margin, kA4W - 2 * margin, kA4H - 2 * margin);
   const double sx = pageRect.width() / std::max(1e-6, vp.width());
