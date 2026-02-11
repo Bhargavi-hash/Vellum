@@ -24,10 +24,12 @@ class Document : public QObject {
 
   QUndoStack* undoStack() { return &undo_; }
 
-  // Internal mutation points used by undo commands.
+  // Internal mutation points used by undo commands / loaders.
   int insertStroke(int index, Stroke s);
   Stroke takeStrokeAt(int index);
   int strokeIndexById(qint64 id) const;
+  void setStrokeShapeById(qint64 id, bool isShape, const QString& type,
+                         const QByteArray& params);
 
   int insertTextBox(int index, TextBox t);
   TextBox takeTextBoxAt(int index);
@@ -37,6 +39,7 @@ class Document : public QObject {
 
   qint64 nextStrokeId();
   qint64 nextTextBoxId();
+  void setNextIds(qint64 nextStrokeId, qint64 nextTextBoxId);
 
  signals:
   void changed();
@@ -50,4 +53,3 @@ class Document : public QObject {
   qint64 nextStrokeId_ = 1;
   qint64 nextTextBoxId_ = 1;
 };
-

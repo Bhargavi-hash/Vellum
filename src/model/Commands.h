@@ -56,3 +56,48 @@ class SetTextBoxRectCommand : public QUndoCommand {
   QRectF after_;
 };
 
+class RemoveTextBoxCommand : public QUndoCommand {
+ public:
+  RemoveTextBoxCommand(Document* doc, int index);
+  void undo() override;
+  void redo() override;
+
+ private:
+  Document* doc_;
+  TextBox removed_;
+  int index_;
+  bool first_ = true;
+};
+
+class SetTextBoxMarkdownCommand : public QUndoCommand {
+ public:
+  SetTextBoxMarkdownCommand(Document* doc, qint64 id, QString before, QString after);
+  void undo() override;
+  void redo() override;
+
+ private:
+  Document* doc_;
+  qint64 id_;
+  QString before_;
+  QString after_;
+};
+
+class SetStrokeShapeCommand : public QUndoCommand {
+ public:
+  SetStrokeShapeCommand(Document* doc, qint64 strokeId, bool isShape, QString shapeType,
+                        QByteArray shapeParams);
+  void undo() override;
+  void redo() override;
+
+ private:
+  Document* doc_;
+  qint64 id_;
+
+  bool beforeIsShape_ = false;
+  QString beforeType_;
+  QByteArray beforeParams_;
+
+  bool afterIsShape_ = false;
+  QString afterType_;
+  QByteArray afterParams_;
+};

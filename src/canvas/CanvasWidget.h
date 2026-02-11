@@ -3,8 +3,12 @@
 #include <QColor>
 #include <QElapsedTimer>
 #include <QPointF>
-#include <QVector>
+#include <QRectF>
 #include <QWidget>
+
+class QPainter;
+
+class Document;
 
 class CanvasWidget : public QWidget {
   Q_OBJECT
@@ -22,6 +26,11 @@ class CanvasWidget : public QWidget {
   };
 
   explicit CanvasWidget(QWidget* parent = nullptr);
+
+  void setDocument(Document* doc);
+  Document* document() const { return doc_; }
+
+  QRectF currentViewportWorld() const;
 
   void setTool(Tool tool);
   Tool tool() const { return tool_; }
@@ -47,16 +56,10 @@ class CanvasWidget : public QWidget {
   void tabletEvent(QTabletEvent* e) override;
 
  private:
-  struct StrokePoint {
+  struct DraftPoint {
     QPointF worldPos;
-    float pressure = 1.0f;  // 0..1
+    float pressure = 1.0f;
     qint64 tMs = 0;
-  };
-
-  struct Stroke {
-    QVector<StrokePoint> pts;
-    QColor color;
-    double baseWidthPoints = 2.0;
   };
 
   QPointF viewToWorld(const QPointF& viewPos) const;
@@ -70,6 +73,12 @@ class CanvasWidget : public QWidget {
 
   void drawPages(QPainter& p) const;
   void drawStrokes(QPainter& p) const;
+  void drawTextBoxes(QPainter& p) const;
+  qint64 hitTestTextBox(const QPointF& worldPos) const;
+  void startEditingTextBox(qint64 id);
+
+
+  Document* doc_ = nullptr;
 
   Tool tool_ = Tool::Pen;
   ViewMode viewMode_ = ViewMode::Infinite;
@@ -77,16 +86,24 @@ class CanvasWidget : public QWidget {
   double penWidthPoints_ = 2.0;
   bool smartShapesEnabled_ = true;
 
-  QVector<Stroke> strokes_;
-  Stroke current_;
+  QVector<DraftPoint> draft_;
+  QColor draftColor_;
+  double draftBaseWidthPoints_ = 2.0;
   bool isDrawing_ = false;
 
   bool isPanning_ = false;
   QPointF lastPanViewPos_;
 
-  double zoom_ = 1.0;       // viewPx per worldUnit (worldUnit==point for now)
-  QPointF panViewPx_ = {};  // translation in view pixels
+  double zoom_ = 1.0;
+  QPointF panViewPx_ = {};
+
+  // Text layer (MVP)
+  qint64 activeTextId_ = -1;
+  bool isDraggingText_ = false;
+  QPointF dragStartWorld_;
+  QRectF dragStartRect_;
+  class QPlainTextEdit* editor_ = nullptr;
+  class QTimer* editorCommitTimer_ = nullptr;
 
   QElapsedTimer timer_;
 };
-

@@ -41,6 +41,16 @@ int Document::strokeIndexById(qint64 id) const {
   return -1;
 }
 
+void Document::setStrokeShapeById(qint64 id, bool isShape, const QString& type,
+                                const QByteArray& params) {
+  const int idx = strokeIndexById(id);
+  if (idx < 0) return;
+  strokes_[idx].isShape = isShape;
+  strokes_[idx].shapeType = type;
+  strokes_[idx].shapeParams = params;
+  emit changed();
+}
+
 int Document::insertTextBox(int index, TextBox t) {
   if (index < 0 || index > textBoxes_.size()) index = textBoxes_.size();
   textBoxes_.insert(index, std::move(t));
@@ -84,3 +94,7 @@ qint64 Document::nextTextBoxId() {
   return nextTextBoxId_++;
 }
 
+void Document::setNextIds(qint64 nextStrokeId, qint64 nextTextBoxId) {
+  nextStrokeId_ = std::max<qint64>(1, nextStrokeId);
+  nextTextBoxId_ = std::max<qint64>(1, nextTextBoxId);
+}

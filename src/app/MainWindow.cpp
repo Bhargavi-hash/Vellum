@@ -2,33 +2,45 @@
 
 #include <QActionGroup>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QMenuBar>
+#include <QMessageBox>
 #include <QToolBar>
 
 #include "canvas/CanvasWidget.h"
+#include "model/Document.h"
+#include "storage/SqliteStore.h"
+#include "export/PdfExporter.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   setWindowTitle("Vellum");
 
-  auto* canvas = new CanvasWidget(this);
-  setCentralWidget(canvas);
+  doc_ = new Document(this);
 
-  // File menu (basic stubs for now; storage/export are added in later todos).
+  canvas_ = new CanvasWidget(this);
+  canvas_->setDocument(doc_);
+  setCentralWidget(canvas_);
+
+  // File menu.
   auto* fileMenu = menuBar()->addMenu("&File");
-  auto* actNew = fileMenu->addAction(QIcon::fromTheme("document-new"), "&New");
-  auto* actOpen = fileMenu->addAction(QIcon::fromTheme("document-open"), "&Open…");
-  auto* actSave = fileMenu->addAction(QIcon::fromTheme("document-save"), "&Save");
-  auto* actSaveAs = fileMenu->addAction(QIcon::fromTheme("document-save-as"), "Save &As…");
+  actNew_ = fileMenu->addAction(QIcon::fromTheme("document-new"), "&New", this,
+                                [this]() { newDocument(); });
+  actOpen_ = fileMenu->addAction(QIcon::fromTheme("document-open"), "&Open…", this,
+                                 [this]() { openDocument(); });
+  actSave_ = fileMenu->addAction(QIcon::fromTheme("document-save"), "&Save", this,
+                                 [this]() { saveDocument(); });
+  actSaveAs_ = fileMenu->addAction(QIcon::fromTheme("document-save-as"), "Save &As…", this,
+                                   [this]() { saveDocumentAs(); });
   fileMenu->addSeparator();
-  auto* actExportPdf = fileMenu->addAction(QIcon::fromTheme("document-export"), "Export &PDF…");
+  actExportPdf_ = fileMenu->addAction(QIcon::fromTheme("document-export"), "Export &PDF…", this,
+                                      [this]() { exportPdf(); });
   fileMenu->addSeparator();
   fileMenu->addAction(QIcon::fromTheme("application-exit"), "Quit", this, &QWidget::close);
 
-  actNew->setEnabled(false);
-  actOpen->setEnabled(false);
-  actSave->setEnabled(false);
-  actSaveAs->setEnabled(false);
-  actExportPdf->setEnabled(false);
+  // Enable core file ops now that SQLite is implemented.
+  actSave_->setEnabled(true);
+  actSaveAs_->setEnabled(true);
+  actExportPdf_->setEnabled(true);
 
   // Top toolbar (tool selection + view mode).
   auto* tb = addToolBar("Tools");
@@ -73,27 +85,105 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   actA4->setCheckable(true);
   modeGroup->addAction(actA4);
 
-  connect(actPen, &QAction::toggled, this, [canvas](bool on) {
-    if (on) canvas->setTool(CanvasWidget::Tool::Pen);
+  connect(actPen, &QAction::toggled, this, [this](bool on) {
+    if (on) canvas_->setTool(CanvasWidget::Tool::Pen);
   });
-  connect(actEraser, &QAction::toggled, this, [canvas](bool on) {
-    if (on) canvas->setTool(CanvasWidget::Tool::Eraser);
+  connect(actEraser, &QAction::toggled, this, [this](bool on) {
+    if (on) canvas_->setTool(CanvasWidget::Tool::Eraser);
   });
-  connect(actSelect, &QAction::toggled, this, [canvas](bool on) {
-    if (on) canvas->setTool(CanvasWidget::Tool::Select);
+  connect(actSelect, &QAction::toggled, this, [this](bool on) {
+    if (on) canvas_->setTool(CanvasWidget::Tool::Select);
   });
-  connect(actText, &QAction::toggled, this, [canvas](bool on) {
-    if (on) canvas->setTool(CanvasWidget::Tool::Text);
+  connect(actText, &QAction::toggled, this, [this](bool on) {
+    if (on) canvas_->setTool(CanvasWidget::Tool::Text);
   });
   connect(actSmartShapes, &QAction::toggled, this,
-          [canvas](bool on) { canvas->setSmartShapesEnabled(on); });
-  connect(actInfinite, &QAction::toggled, this, [canvas](bool on) {
-    if (on) canvas->setViewMode(CanvasWidget::ViewMode::Infinite);
+          [this](bool on) { canvas_->setSmartShapesEnabled(on); });
+  connect(actInfinite, &QAction::toggled, this, [this](bool on) {
+    if (on) canvas_->setViewMode(CanvasWidget::ViewMode::Infinite);
   });
-  connect(actA4, &QAction::toggled, this, [canvas](bool on) {
-    if (on) canvas->setViewMode(CanvasWidget::ViewMode::A4Notebook);
+  connect(actA4, &QAction::toggled, this, [this](bool on) {
+    if (on) canvas_->setViewMode(CanvasWidget::ViewMode::A4Notebook);
   });
 
+  connect(doc_, &Document::changed, this, [this]() { updateWindowTitle(); });
+
+  updateWindowTitle();
   resize(1100, 800);
 }
 
+void MainWindow::newDocument() {
+  doc_->clear();
+  setCurrentPath(QString());
+}
+
+void MainWindow::openDocument() {
+  const QString path = QFileDialog::getOpenFileName(this, "Open Vellum note", QString(),
+                                                    "Vellum Notes (*.vellum);;All Files (*)");
+  if (path.isEmpty()) return;
+
+  QString err;
+  if (!SqliteStore::loadFromFile(path, doc_, &err)) {
+    QMessageBox::critical(this, "Open failed", err);
+    return;
+  }
+
+  setCurrentPath(path);
+}
+
+bool MainWindow::saveDocument() {
+  if (currentPath_.isEmpty()) return saveDocumentAs();
+
+  QString err;
+  if (!SqliteStore::saveToFile(currentPath_, *doc_, &err)) {
+    QMessageBox::critical(this, "Save failed", err);
+    return false;
+  }
+  updateWindowTitle();
+  return true;
+}
+
+bool MainWindow::saveDocumentAs() {
+  const QString path = QFileDialog::getSaveFileName(this, "Save Vellum note", currentPath_,
+                                                    "Vellum Notes (*.vellum);;All Files (*)");
+  if (path.isEmpty()) return false;
+
+  QString finalPath = path;
+  if (!finalPath.endsWith(".vellum")) finalPath += ".vellum";
+
+  QString err;
+  if (!SqliteStore::saveToFile(finalPath, *doc_, &err)) {
+    QMessageBox::critical(this, "Save failed", err);
+    return false;
+  }
+  setCurrentPath(finalPath);
+  return true;
+}
+
+void MainWindow::exportPdf() {
+  const QString path = QFileDialog::getSaveFileName(this, "Export PDF", QString(),
+                                                    "PDF (*.pdf);;All Files (*)");
+  if (path.isEmpty()) return;
+  QString finalPath = path;
+  if (!finalPath.endsWith(".pdf")) finalPath += ".pdf";
+
+  // Export current viewport in infinite mode; ignored in A4 mode.
+  // For now we approximate viewport as what the canvas currently shows in world coords.
+  const QRectF viewportWorld = canvas_->currentViewportWorld();
+
+  QString err;
+  if (!PdfExporter::exportToPdf(finalPath, *doc_, viewportWorld, &err)) {
+    QMessageBox::critical(this, "Export failed", err);
+    return;
+  }
+}
+
+void MainWindow::setCurrentPath(const QString& path) {
+  currentPath_ = path;
+  updateWindowTitle();
+}
+
+void MainWindow::updateWindowTitle() {
+  const QString name = currentPath_.isEmpty() ? "Untitled" : QFileInfo(currentPath_).fileName();
+  setWindowTitle(QString("%1 — Vellum").arg(name));
+}

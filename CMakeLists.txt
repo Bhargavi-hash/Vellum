@@ -18,6 +18,19 @@ add_executable(vellum
   src/app/MainWindow.cpp
   src/canvas/CanvasWidget.h
   src/canvas/CanvasWidget.cpp
+  src/model/Stroke.h
+  src/model/Stroke.cpp
+  src/model/TextBox.h
+  src/model/Document.h
+  src/model/Document.cpp
+  src/model/Commands.h
+  src/model/Commands.cpp
+  src/storage/SqliteStore.h
+  src/storage/SqliteStore.cpp
+  src/shapes/ShapeRecognizer.h
+  src/shapes/ShapeRecognizer.cpp
+  src/export/PdfExporter.h
+  src/export/PdfExporter.cpp
 )
 
 target_include_directories(vellum PRIVATE src)
@@ -31,4 +44,3 @@ target_link_libraries(vellum PRIVATE
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(vellum PRIVATE -Wall -Wextra -Wpedantic)
 endif()
-
