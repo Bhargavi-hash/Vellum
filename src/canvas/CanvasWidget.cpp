@@ -179,11 +179,24 @@ void CanvasWidget::mousePressEvent(QMouseEvent *e)
     if (tool_ == Tool::Pen) { beginStroke(world, 1.0f); e->accept(); }
     else if (tool_ == Tool::Eraser) { eraseAt(world, 10.0 / zoom_); e->accept(); }
     else if (tool_ == Tool::Text) {
-        TextBox tb; tb.id = doc_->nextTextBoxId();
-        tb.rectWorld = QRectF(world, QSizeF(200 / zoom_, 100 / zoom_));
-        doc_->undoStack()->push(new AddTextBoxCommand(doc_, tb));
-        startEditingTextBox(tb.id);
+        // First, check if we are clicking an existing box
+        const qint64 hit = hitTestTextBox(world);
+        if (hit >= 0) {
+            // If we hit an existing one, just edit it!
+            startEditingTextBox(hit);
+        } else {
+            // Only create a new box if we clicked empty space
+            if (!doc_) return;
+            TextBox tb;
+            tb.id = doc_->nextTextBoxId();
+            // Default size, or you could make this dynamic
+            tb.rectWorld = QRectF(world, QSizeF(200 / zoom_, 100 / zoom_));
+            tb.markdown = "";
+            doc_->undoStack()->push(new AddTextBoxCommand(doc_, tb));
+            startEditingTextBox(tb.id);
+        }
         e->accept();
+        return;
     }
     else if (tool_ == Tool::Select) {
         const qint64 hit = hitTestTextBox(world);
