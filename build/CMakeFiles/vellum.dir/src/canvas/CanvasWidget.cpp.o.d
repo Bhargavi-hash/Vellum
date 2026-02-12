@@ -423,6 +423,22 @@ CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QTimer \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtimer.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qbasictimer.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/QKeyEvent \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMenu \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmenu.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qicon.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qaction.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/QClipboard \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qclipboard.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreapplication.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qeventloop.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreapplication_platform.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qguiapplication.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qinputmethod.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qlocale.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qguiapplication_platform.h \
  /home/bhargavi/Documents/Vellum/src/model/Commands.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/QUndoCommand \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qundostack.h \

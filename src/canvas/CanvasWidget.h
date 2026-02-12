@@ -54,6 +54,7 @@ class CanvasWidget : public QWidget {
   void mouseReleaseEvent(QMouseEvent* e) override;
   void wheelEvent(QWheelEvent* e) override;
   void tabletEvent(QTabletEvent* e) override;
+  void keyPressEvent(QKeyEvent *e) override;
 
  private:
   struct DraftPoint {
@@ -96,6 +97,8 @@ class CanvasWidget : public QWidget {
 
   double zoom_ = 1.0;
   QPointF panViewPx_ = {};
+
+  bool isResizingText_ = false; // Add this line!
 
   // Text layer (MVP)
   qint64 activeTextId_ = -1;
