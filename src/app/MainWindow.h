@@ -18,6 +18,7 @@ class MainWindow : public QMainWindow {
   bool saveDocument();
   bool saveDocumentAs();
   void exportPdf();
+  void createColorPalette();
 
   void setCurrentPath(const QString& path);
   void updateWindowTitle();

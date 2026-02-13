@@ -3,6 +3,7 @@
 #include <QActionGroup>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QColorDialog>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QToolBar>
@@ -85,6 +86,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   actA4->setCheckable(true);
   modeGroup->addAction(actA4);
 
+  createColorPalette();
+
   connect(actPen, &QAction::toggled, this, [this](bool on) {
     if (on) canvas_->setTool(CanvasWidget::Tool::Pen);
   });
@@ -115,6 +118,34 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 void MainWindow::newDocument() {
   doc_->clear();
   setCurrentPath(QString());
+}
+
+void MainWindow::createColorPalette() {
+    QToolBar *colorBar = addToolBar("Colors");
+    const QList<QColor> colors = { 
+        Qt::black, Qt::red, Qt::blue, 
+        QColor("#27ae60"), // Emerald Green
+        QColor("#f39c12")  // Orange
+    };
+
+    for (const QColor &color : colors) {
+        // Create a 16x16 color block icon
+        QPixmap pix(16, 16);
+        pix.fill(color);
+        
+        QAction *action = colorBar->addAction(QIcon(pix), "");
+        connect(action, &QAction::triggered, [this, color]() {
+            canvas_->setPenColor(color);
+        });
+    }
+
+    // Add a custom color picker button
+    colorBar->addSeparator();
+    QAction *customColor = colorBar->addAction("Custom");
+    connect(customColor, &QAction::triggered, [this]() {
+        QColor c = QColorDialog::getColor(Qt::black, this);
+        if (c.isValid()) canvas_->setPenColor(c);
+    });
 }
 
 void MainWindow::openDocument() {
