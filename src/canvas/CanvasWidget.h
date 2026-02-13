@@ -47,6 +47,12 @@ class CanvasWidget : public QWidget {
   void setSmartShapesEnabled(bool enabled);
   bool smartShapesEnabled() const { return smartShapesEnabled_; }
 
+  // Font control methods
+    void updateFontSize(int pointSize);
+    void updateFontFamily(const QString &family);
+    void setFontSize(int points); // Alias for consistency
+    void setFontFamily(const QString &family); // Alias for consistency
+
  protected:
   void paintEvent(QPaintEvent* e) override;
   void mousePressEvent(QMouseEvent* e) override;
@@ -84,6 +90,7 @@ class CanvasWidget : public QWidget {
   Tool tool_ = Tool::Pen;
   ViewMode viewMode_ = ViewMode::Infinite;
   QColor penColor_ = QColor(20, 20, 20);
+  QFont currentFont_ = QFont("Arial", 14); // Default font
   double penWidthPoints_ = 2.0;
   bool smartShapesEnabled_ = true;
 

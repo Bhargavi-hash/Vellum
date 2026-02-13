@@ -87,6 +87,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   modeGroup->addAction(actA4);
 
   createColorPalette();
+  setupTextToolbar();
 
   connect(actPen, &QAction::toggled, this, [this](bool on) {
     if (on) canvas_->setTool(CanvasWidget::Tool::Pen);
@@ -145,6 +146,33 @@ void MainWindow::createColorPalette() {
     connect(customColor, &QAction::triggered, [this]() {
         QColor c = QColorDialog::getColor(Qt::black, this);
         if (c.isValid()) canvas_->setPenColor(c);
+    });
+}
+
+void MainWindow::setupTextToolbar() {
+    QToolBar *textToolbar = addToolBar("Text Options");
+
+    // 1. Font Family Dropdown
+    fontCombo = new QFontComboBox(this);
+    textToolbar->addWidget(fontCombo);
+
+    // 2. Font Size Spinner
+    sizeSpin = new QSpinBox(this);
+    sizeSpin->setRange(6, 100);
+    sizeSpin->setValue(12);
+    sizeSpin->setSuffix(" pt");
+    textToolbar->addWidget(sizeSpin);
+
+    // --- Connections ---
+
+    // When the font family changes
+    connect(fontCombo, &QFontComboBox::currentFontChanged, this, [this](const QFont &f) {
+        canvas_->updateFontFamily(f.family());
+    });
+
+    // When the font size changes
+    connect(sizeSpin, &QSpinBox::valueChanged, this, [this](int s) {
+        canvas_->updateFontSize(s);
     });
 }
 

@@ -240,21 +240,17 @@ void CanvasWidget::mousePressEvent(QMouseEvent *e)
     }
     else if (tool_ == Tool::Text)
     {
-        // First, check if we are clicking an existing box
         const qint64 hit = hitTestTextBox(world);
         if (hit >= 0)
         {
-            // If we hit an existing one, just edit it!
             startEditingTextBox(hit);
         }
         else
         {
-            // Only create a new box if we clicked empty space
             if (!doc_)
                 return;
             TextBox tb;
             tb.id = doc_->nextTextBoxId();
-            // Default size, or you could make this dynamic
             tb.rectWorld = QRectF(world, QSizeF(200 / zoom_, 100 / zoom_));
             tb.markdown = "";
             doc_->undoStack()->push(new AddTextBoxCommand(doc_, tb));
@@ -310,10 +306,7 @@ void CanvasWidget::mouseMoveEvent(QMouseEvent *e)
         next.setBottom(std::max(next.top() + 20 / zoom_, dragStartRect_.bottom() + delta.y()));
         doc_->setTextBoxRectById(activeTextId_, next);
         if (editor_ && editor_->isVisible())
-        {
-            QRectF vr = QRectF(worldToView(next.topLeft()), worldToView(next.bottomRight())).normalized();
-            editor_->setGeometry(vr.toRect());
-        }
+            startEditingTextBox(activeTextId_);
         update();
         return;
     }
@@ -495,7 +488,6 @@ void CanvasWidget::drawTextBoxes(QPainter &p) const
         p.setBrush(QColor(255, 255, 255, 220));
         p.drawRoundedRect(vr, 4, 4);
 
-        // Resize handle
         if (tool_ == Tool::Select && tb.id == activeTextId_)
         {
             p.setBrush(Qt::blue);
@@ -504,10 +496,12 @@ void CanvasWidget::drawTextBoxes(QPainter &p) const
         }
 
         QTextDocument d;
+        d.setDefaultFont(currentFont_);
+        d.setDocumentMargin(5);
         d.setMarkdown(tb.markdown);
-        d.setTextWidth(vr.width() - 10);
+        d.setTextWidth(vr.width());
         p.save();
-        p.translate(vr.topLeft() + QPointF(5, 5));
+        p.translate(vr.topLeft());
         d.drawContents(&p);
         p.restore();
     }
@@ -545,35 +539,104 @@ void CanvasWidget::startEditingTextBox(qint64 id)
     int idx = doc_->textBoxIndexById(id);
     if (idx < 0)
         return;
+
     if (!editor_)
     {
         editor_ = new QPlainTextEdit(this);
+        editor_->setFrameStyle(QFrame::NoFrame);
+        editor_->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        editor_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        
+        // Ensure the editor doesn't try to be "helpful" with internal margins
+        editor_->document()->setDocumentMargin(5);
+        editor_->setLineWrapMode(QPlainTextEdit::WidgetWidth);
+        
         editor_->setStyleSheet("background: white; border: 1px solid #333;");
+        editor_->setFont(currentFont_);
+        
         editorCommitTimer_ = new QTimer(this);
         editorCommitTimer_->setSingleShot(true);
+
         connect(editor_, &QPlainTextEdit::textChanged, [this]()
-                {
+        {
             if (activeTextId_ < 0) return;
+            
+            // 1. Sync the text content
             doc_->setTextBoxMarkdownById(activeTextId_, editor_->toPlainText());
-            editorCommitTimer_->start(500); });
+            
+            // 2. Calculate height. Use viewport width to be precise about wrapping.
+            editor_->document()->setTextWidth(editor_->viewport()->width());
+            double textHeightView = editor_->document()->size().height();
+            double textHeightWorld = textHeightView / zoom_;
+            
+            int i = doc_->textBoxIndexById(activeTextId_);
+            if (i >= 0) {
+                QRectF r = doc_->textBoxes()[i].rectWorld;
+                
+                if (textHeightWorld > r.height()) {
+                    r.setHeight(textHeightWorld);
+                    doc_->setTextBoxRectById(activeTextId_, r); 
+                    
+                    // 3. Update Widget Geometry
+                    QRectF vr = QRectF(worldToView(r.topLeft()), worldToView(r.bottomRight())).normalized();
+                    
+                    // CRITICAL: Force the widget to grow so it cannot scroll internally
+                    editor_->setMinimumHeight(vr.height()); 
+                    editor_->setGeometry(vr.toRect());
+                }
+            }
+            
+            // 4. Repaint the canvas (and the blue border)
+            this->update(); 
+            editorCommitTimer_->start(500); 
+        });
+
         connect(editorCommitTimer_, &QTimer::timeout, [this]()
-                {
+        {
             if (activeTextId_ < 0) return;
             int i = doc_->textBoxIndexById(activeTextId_);
-            doc_->undoStack()->push(new SetTextBoxMarkdownCommand(doc_, activeTextId_, doc_->textBoxes()[i].markdown, editor_->toPlainText())); });
+            doc_->undoStack()->push(new SetTextBoxMarkdownCommand(doc_, activeTextId_, doc_->textBoxes()[i].markdown, editor_->toPlainText())); 
+        });
     }
+
     const auto &tb = doc_->textBoxes()[idx];
     QRectF vr = QRectF(worldToView(tb.rectWorld.topLeft()), worldToView(tb.rectWorld.bottomRight())).normalized();
-    editor_->setGeometry(vr.toRect());
+
     if (editor_->toPlainText() != tb.markdown)
         editor_->setPlainText(tb.markdown);
+
+    // Initial setup for the editor widget
+    editor_->setMinimumHeight(vr.height());
+    editor_->setGeometry(vr.toRect());
+    editor_->setFont(currentFont_);
     editor_->show();
     editor_->setFocus();
-    // Move cursor to the end so you can continue typing immediately
+
     QTextCursor cursor = editor_->textCursor();
     cursor.movePosition(QTextCursor::End);
     editor_->setTextCursor(cursor);
 }
+
+void CanvasWidget::updateFontSize(int pointSize)
+{
+    currentFont_.setPointSize(pointSize);
+    if (editor_) {
+        editor_->setFont(currentFont_);
+    }
+    update(); // Redraw static boxes
+}
+
+void CanvasWidget::updateFontFamily(const QString &family)
+{
+    currentFont_.setFamily(family);
+    if (editor_) {
+        editor_->setFont(currentFont_);
+    }
+    update(); // Redraw static boxes
+}
+
+void CanvasWidget::setFontSize(int p) { updateFontSize(p); }
+void CanvasWidget::setFontFamily(const QString &f) { updateFontFamily(f); }
 
 QRectF CanvasWidget::currentViewportWorld() const
 {

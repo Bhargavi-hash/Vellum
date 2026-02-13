@@ -2,6 +2,8 @@
 
 #include <QMainWindow>
 #include <QString>
+#include <QFontComboBox>
+#include <QSpinBox>
 
 class QAction;
 class CanvasWidget;
@@ -33,4 +35,8 @@ class MainWindow : public QMainWindow {
   QAction* actSave_ = nullptr;
   QAction* actSaveAs_ = nullptr;
   QAction* actExportPdf_ = nullptr;
+
+  QFontComboBox* fontCombo;
+  QSpinBox* sizeSpin;
+  void setupTextToolbar();
 };
