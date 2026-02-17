@@ -17,49 +17,55 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
   setWindowIcon(QIcon(":/assets/logo.png"));
   // 1. Apply macOS Global Styling (QSS)
-  QString macStyle = R"(
-    QMainWindow { background-color: #f6f6f6; }
-    
-    QToolBar {
-        background-color: #f6f6f6;
+ QString goodnotesStyle = R"(
+    /* The very top document bar */
+    #DocumentBar {
+        background-color: #3b6fb6; /* The specific Goodnotes blue */
+        color: white;
         border: none;
-        border-bottom: 1px solid #dcdcdc;
-        spacing: 12px;
-        padding: 6px;
+        min-height: 40px;
     }
 
-    /* Pill-shaped modern buttons */
-    QToolButton {
+    /* The main white toolbar */
+    QToolBar#DrawingToolbar {
+        background-color: #ffffff;
+        border: none;
+        border-bottom: 1px solid #e0e0e0; /* Very light separator */
+        spacing: 15px;
+        padding: 5px 10px;
+    }
+
+    /* Circular/Pill highlight for the active tool */
+    QToolBar#DrawingToolbar QToolButton {
         background-color: transparent;
-        border-radius: 6px;
+        border-radius: 15px; /* Makes it look like a circle */
         padding: 5px;
-    }
-    
-    QToolButton:checked {
-        background-color: #d1d1d1;
-        border: 1px solid #c0c0c0;
+        color: #444;
     }
 
-    QToolButton:hover:!checked {
-        background-color: #ececec;
+    /* The "light blue circle" highlight from your image */
+    QToolBar#DrawingToolbar QToolButton:checked {
+        background-color: #dbeafe; /* Light blue circle background */
+        border: none;
     }
 
-    /* Clean, rounded Input Fields */
-    QSpinBox, QComboBox, QFontComboBox {
-        background: white;
-        border: 1px solid #dcdcdc;
-        border-radius: 5px;
-        padding: 3px 6px;
-        font-size: 12px;
+    QToolBar#DrawingToolbar QToolButton:hover:!checked {
+        background-color: #f3f4f6;
+    }
+
+    /* Make the Canvas have zero border to merge with the white bar */
+    #CanvasContainer {
+        border: none;
+        background-color: #ffffff;
     }
 )";
-  setStyleSheet(macStyle);
-
+  setStyleSheet(goodnotesStyle);
   setWindowTitle("Vellum");
 
   // Core model and view setup
   doc_ = new Document(this);
   canvas_ = new CanvasWidget(this);
+  canvas_->setObjectName("CanvasContainer");
   canvas_->setDocument(doc_);
   setCentralWidget(canvas_);
 
@@ -74,11 +80,33 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   fileMenu->addSeparator();
   fileMenu->addAction(QIcon::fromTheme("application-exit"), "Quit", this, &QWidget::close);
 
-  // --- UNIFIED TOOLBAR SETUP ---
-  auto *tb = addToolBar("Main Toolbar");
+  // --- LAYERED TOOLBAR SETUP ---
+  // 1. Top Document Bar (The Blue Layer)
+  auto *docBar = new QToolBar(this);
+  docBar->setObjectName("DocumentBar");
+  docBar->setMovable(false);
+  docBar->setFloatable(false);
+  addToolBar(Qt::TopToolBarArea, docBar);
+
+  // Add Document Title/Actions here
+  docBar->addAction(actNew_);
+  docBar->addAction(actOpen_);
+  docBar->addAction(actSave_);
+  
+  // Spacer to push things to the right if needed
+  auto* spacer = new QWidget();
+  spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  docBar->addWidget(spacer);
+  docBar->addAction(actExportPdf_);
+
+  // 2. Drawing Toolbar (The White Layer)
+  auto *tb = new QToolBar(this); // Using 'tb' to keep your existing connections working
+  tb->setObjectName("DrawingToolbar");
   tb->setMovable(false);
   tb->setFloatable(false);
   tb->setToolButtonStyle(Qt::ToolButtonIconOnly);
+  tb->setIconSize(QSize(24, 24)); // Slightly larger icons for a mobile feel
+  addToolBar(Qt::TopToolBarArea, tb);
 
   // Tool Selection Group
   auto *toolsGroup = new QActionGroup(this);
@@ -136,7 +164,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   modeGroup->addAction(actA4);
 
   // Load secondary UI elements
-  createColorPalette(); 
+  createColorPalette(tb); 
 
   // --- CONNECTIONS ---
   connect(actPen, &QAction::toggled, this, [this](bool on) { if (on) canvas_->setTool(CanvasWidget::Tool::Pen); });
@@ -163,9 +191,10 @@ void MainWindow::newDocument()
   setCurrentPath(QString());
 }
 
-void MainWindow::createColorPalette()
+void MainWindow::createColorPalette(QToolBar *targetBar) // Use the pointer we passed in
 {
-  QToolBar *colorBar = addToolBar("Colors");
+  targetBar->addSeparator();
+
   const QList<QColor> colors = {
       Qt::black, Qt::red, Qt::blue,
       QColor("#27ae60"), // Emerald Green
@@ -174,24 +203,31 @@ void MainWindow::createColorPalette()
 
   for (const QColor &color : colors)
   {
-    // Create a 16x16 color block icon
-    QPixmap pix(16, 16);
-    pix.fill(color);
+    // Create a circular color icon to match the modern UI
+    QPixmap pix(20, 20);
+    pix.fill(Qt::transparent);
+    QPainter painter(&pix);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setBrush(color);
+    painter.setPen(Qt::NoPen);
+    painter.drawEllipse(0, 0, 20, 20);
+    painter.end();
 
-    QAction *action = colorBar->addAction(QIcon(pix), "");
-    connect(action, &QAction::triggered, [this, color]()
-            { canvas_->setPenColor(color); });
-  }
-
-  // Add a custom color picker button
-  colorBar->addSeparator();
-  QAction *customColor = colorBar->addAction("Custom");
-  connect(customColor, &QAction::triggered, [this]()
-          {
-        QColor c = QColorDialog::getColor(Qt::black, this);
-        if (c.isValid()) canvas_->setPenColor(c); });
+    // Add action directly to targetBar (DrawingToolbar)
+    QAction *action = targetBar->addAction(QIcon(pix), "");
+    connect(action, &QAction::triggered, [this, color]() { 
+        canvas_->setPenColor(color); 
+    });
 }
 
+  targetBar->addSeparator();
+  // Use a nice icon or symbol for the custom picker instead of text
+  QAction *customColor = targetBar->addAction(QIcon::fromTheme("color-management"), "Custom");
+  connect(customColor, &QAction::triggered, [this]() {
+        QColor c = QColorDialog::getColor(Qt::black, this);
+        if (c.isValid()) canvas_->setPenColor(c); 
+  });
+}
 void MainWindow::setupTextToolbar()
 {
   QToolBar *textToolbar = addToolBar("Text Options");

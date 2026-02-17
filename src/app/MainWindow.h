@@ -4,6 +4,7 @@
 #include <QString>
 #include <QFontComboBox>
 #include <QSpinBox>
+#include <QPainter>
 
 class QAction;
 class CanvasWidget;
@@ -20,7 +21,7 @@ class MainWindow : public QMainWindow {
   bool saveDocument();
   bool saveDocumentAs();
   void exportPdf();
-  void createColorPalette();
+  void createColorPalette(QToolBar* targetBar);
 
   void setCurrentPath(const QString& path);
   void updateWindowTitle();

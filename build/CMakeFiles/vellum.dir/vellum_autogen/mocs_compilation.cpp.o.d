@@ -388,6 +388,10 @@ CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qfontdatabase.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QSpinBox \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qspinbox.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/QPainter \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qpainter.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextoption.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qpen.h \
  /home/bhargavi/Documents/Vellum/build/vellum_autogen/SXBUF2WVFU/moc_CanvasWidget.cpp \
  /home/bhargavi/Documents/Vellum/build/vellum_autogen/SXBUF2WVFU/../../../src/canvas/CanvasWidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/QColor \
