@@ -400,7 +400,8 @@
 		"/usr/lib/x86_64-linux-gnu/cmake/Qt6Sql/Qt6SqlTargets.cmake",
 		"/usr/lib/x86_64-linux-gnu/cmake/Qt6Sql/Qt6SqlTargets-none.cmake",
 		"/usr/lib/x86_64-linux-gnu/cmake/Qt6Sql/Qt6SqlAdditionalTargetInfo.cmake",
-		"/usr/lib/x86_64-linux-gnu/cmake/Qt6Sql/Qt6SqlVersionlessTargets.cmake"
+		"/usr/lib/x86_64-linux-gnu/cmake/Qt6Sql/Qt6SqlVersionlessTargets.cmake",
+		"/home/bhargavi/Documents/Vellum/resources.qrc"
 	],
 	"CMAKE_SOURCE_DIR" : "/home/bhargavi/Documents/Vellum",
 	"DEP_FILE" : "",
@@ -512,7 +513,7 @@
 	],
 	"MOC_PREDEFS_FILE" : "/home/bhargavi/Documents/Vellum/build/vellum_autogen/moc_predefs.h",
 	"MOC_RELAXED_MODE" : false,
-	"MOC_SKIP" : [],
+	"MOC_SKIP" : [ "/home/bhargavi/Documents/Vellum/build/qrc_resources.cpp" ],
 	"MULTI_CONFIG" : false,
 	"PARALLEL" : 4,
 	"PARSE_CACHE_FILE" : "/home/bhargavi/Documents/Vellum/build/CMakeFiles/vellum_autogen.dir/ParseCache.txt",
@@ -551,7 +552,7 @@
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],
-	"UIC_SKIP" : [],
+	"UIC_SKIP" : [ "/home/bhargavi/Documents/Vellum/build/qrc_resources.cpp" ],
 	"UIC_UI_FILES" : [],
 	"VERBOSITY" : 0
 }

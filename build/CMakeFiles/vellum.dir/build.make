@@ -69,10 +69,17 @@ include CMakeFiles/vellum.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/vellum.dir/flags.make
 
+qrc_resources.cpp: ../assets/Vellum.png
+qrc_resources.cpp: resources.qrc.depends
+qrc_resources.cpp: /usr/lib/qt6/libexec/rcc
+qrc_resources.cpp: ../resources.qrc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating qrc_resources.cpp"
+	/usr/lib/qt6/libexec/rcc --name resources --output /home/bhargavi/Documents/Vellum/build/qrc_resources.cpp /home/bhargavi/Documents/Vellum/resources.qrc
+
 CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o: CMakeFiles/vellum.dir/flags.make
 CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o: vellum_autogen/mocs_compilation.cpp
 CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o: CMakeFiles/vellum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o -MF CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o.d -o CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o -c /home/bhargavi/Documents/Vellum/build/vellum_autogen/mocs_compilation.cpp
 
 CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.i: cmake_force
@@ -83,10 +90,24 @@ CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/bhargavi/Documents/Vellum/build/vellum_autogen/mocs_compilation.cpp -o CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.s
 
+CMakeFiles/vellum.dir/qrc_resources.cpp.o: CMakeFiles/vellum.dir/flags.make
+CMakeFiles/vellum.dir/qrc_resources.cpp.o: qrc_resources.cpp
+CMakeFiles/vellum.dir/qrc_resources.cpp.o: CMakeFiles/vellum.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/vellum.dir/qrc_resources.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/vellum.dir/qrc_resources.cpp.o -MF CMakeFiles/vellum.dir/qrc_resources.cpp.o.d -o CMakeFiles/vellum.dir/qrc_resources.cpp.o -c /home/bhargavi/Documents/Vellum/build/qrc_resources.cpp
+
+CMakeFiles/vellum.dir/qrc_resources.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/vellum.dir/qrc_resources.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/bhargavi/Documents/Vellum/build/qrc_resources.cpp > CMakeFiles/vellum.dir/qrc_resources.cpp.i
+
+CMakeFiles/vellum.dir/qrc_resources.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/vellum.dir/qrc_resources.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/bhargavi/Documents/Vellum/build/qrc_resources.cpp -o CMakeFiles/vellum.dir/qrc_resources.cpp.s
+
 CMakeFiles/vellum.dir/src/main.cpp.o: CMakeFiles/vellum.dir/flags.make
 CMakeFiles/vellum.dir/src/main.cpp.o: ../src/main.cpp
 CMakeFiles/vellum.dir/src/main.cpp.o: CMakeFiles/vellum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/vellum.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/vellum.dir/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/vellum.dir/src/main.cpp.o -MF CMakeFiles/vellum.dir/src/main.cpp.o.d -o CMakeFiles/vellum.dir/src/main.cpp.o -c /home/bhargavi/Documents/Vellum/src/main.cpp
 
 CMakeFiles/vellum.dir/src/main.cpp.i: cmake_force
@@ -100,7 +121,7 @@ CMakeFiles/vellum.dir/src/main.cpp.s: cmake_force
 CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o: CMakeFiles/vellum.dir/flags.make
 CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o: ../src/app/MainWindow.cpp
 CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o: CMakeFiles/vellum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o -MF CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o.d -o CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o -c /home/bhargavi/Documents/Vellum/src/app/MainWindow.cpp
 
 CMakeFiles/vellum.dir/src/app/MainWindow.cpp.i: cmake_force
@@ -114,7 +135,7 @@ CMakeFiles/vellum.dir/src/app/MainWindow.cpp.s: cmake_force
 CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o: CMakeFiles/vellum.dir/flags.make
 CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o: ../src/canvas/CanvasWidget.cpp
 CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o: CMakeFiles/vellum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o -MF CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o.d -o CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o -c /home/bhargavi/Documents/Vellum/src/canvas/CanvasWidget.cpp
 
 CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.i: cmake_force
@@ -128,7 +149,7 @@ CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.s: cmake_force
 CMakeFiles/vellum.dir/src/model/Stroke.cpp.o: CMakeFiles/vellum.dir/flags.make
 CMakeFiles/vellum.dir/src/model/Stroke.cpp.o: ../src/model/Stroke.cpp
 CMakeFiles/vellum.dir/src/model/Stroke.cpp.o: CMakeFiles/vellum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/vellum.dir/src/model/Stroke.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/vellum.dir/src/model/Stroke.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/vellum.dir/src/model/Stroke.cpp.o -MF CMakeFiles/vellum.dir/src/model/Stroke.cpp.o.d -o CMakeFiles/vellum.dir/src/model/Stroke.cpp.o -c /home/bhargavi/Documents/Vellum/src/model/Stroke.cpp
 
 CMakeFiles/vellum.dir/src/model/Stroke.cpp.i: cmake_force
@@ -142,7 +163,7 @@ CMakeFiles/vellum.dir/src/model/Stroke.cpp.s: cmake_force
 CMakeFiles/vellum.dir/src/model/Document.cpp.o: CMakeFiles/vellum.dir/flags.make
 CMakeFiles/vellum.dir/src/model/Document.cpp.o: ../src/model/Document.cpp
 CMakeFiles/vellum.dir/src/model/Document.cpp.o: CMakeFiles/vellum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/vellum.dir/src/model/Document.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/vellum.dir/src/model/Document.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/vellum.dir/src/model/Document.cpp.o -MF CMakeFiles/vellum.dir/src/model/Document.cpp.o.d -o CMakeFiles/vellum.dir/src/model/Document.cpp.o -c /home/bhargavi/Documents/Vellum/src/model/Document.cpp
 
 CMakeFiles/vellum.dir/src/model/Document.cpp.i: cmake_force
@@ -156,7 +177,7 @@ CMakeFiles/vellum.dir/src/model/Document.cpp.s: cmake_force
 CMakeFiles/vellum.dir/src/model/Commands.cpp.o: CMakeFiles/vellum.dir/flags.make
 CMakeFiles/vellum.dir/src/model/Commands.cpp.o: ../src/model/Commands.cpp
 CMakeFiles/vellum.dir/src/model/Commands.cpp.o: CMakeFiles/vellum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/vellum.dir/src/model/Commands.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/vellum.dir/src/model/Commands.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/vellum.dir/src/model/Commands.cpp.o -MF CMakeFiles/vellum.dir/src/model/Commands.cpp.o.d -o CMakeFiles/vellum.dir/src/model/Commands.cpp.o -c /home/bhargavi/Documents/Vellum/src/model/Commands.cpp
 
 CMakeFiles/vellum.dir/src/model/Commands.cpp.i: cmake_force
@@ -170,7 +191,7 @@ CMakeFiles/vellum.dir/src/model/Commands.cpp.s: cmake_force
 CMakeFiles/vellum.dir/src/storage/SqliteStore.cpp.o: CMakeFiles/vellum.dir/flags.make
 CMakeFiles/vellum.dir/src/storage/SqliteStore.cpp.o: ../src/storage/SqliteStore.cpp
 CMakeFiles/vellum.dir/src/storage/SqliteStore.cpp.o: CMakeFiles/vellum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/vellum.dir/src/storage/SqliteStore.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/vellum.dir/src/storage/SqliteStore.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/vellum.dir/src/storage/SqliteStore.cpp.o -MF CMakeFiles/vellum.dir/src/storage/SqliteStore.cpp.o.d -o CMakeFiles/vellum.dir/src/storage/SqliteStore.cpp.o -c /home/bhargavi/Documents/Vellum/src/storage/SqliteStore.cpp
 
 CMakeFiles/vellum.dir/src/storage/SqliteStore.cpp.i: cmake_force
@@ -184,7 +205,7 @@ CMakeFiles/vellum.dir/src/storage/SqliteStore.cpp.s: cmake_force
 CMakeFiles/vellum.dir/src/shapes/ShapeRecognizer.cpp.o: CMakeFiles/vellum.dir/flags.make
 CMakeFiles/vellum.dir/src/shapes/ShapeRecognizer.cpp.o: ../src/shapes/ShapeRecognizer.cpp
 CMakeFiles/vellum.dir/src/shapes/ShapeRecognizer.cpp.o: CMakeFiles/vellum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/vellum.dir/src/shapes/ShapeRecognizer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/vellum.dir/src/shapes/ShapeRecognizer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/vellum.dir/src/shapes/ShapeRecognizer.cpp.o -MF CMakeFiles/vellum.dir/src/shapes/ShapeRecognizer.cpp.o.d -o CMakeFiles/vellum.dir/src/shapes/ShapeRecognizer.cpp.o -c /home/bhargavi/Documents/Vellum/src/shapes/ShapeRecognizer.cpp
 
 CMakeFiles/vellum.dir/src/shapes/ShapeRecognizer.cpp.i: cmake_force
@@ -198,7 +219,7 @@ CMakeFiles/vellum.dir/src/shapes/ShapeRecognizer.cpp.s: cmake_force
 CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.o: CMakeFiles/vellum.dir/flags.make
 CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.o: ../src/export/PdfExporter.cpp
 CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.o: CMakeFiles/vellum.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.o -MF CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.o.d -o CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.o -c /home/bhargavi/Documents/Vellum/src/export/PdfExporter.cpp
 
 CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.i: cmake_force
@@ -212,6 +233,7 @@ CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.s: cmake_force
 # Object files for target vellum
 vellum_OBJECTS = \
 "CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o" \
+"CMakeFiles/vellum.dir/qrc_resources.cpp.o" \
 "CMakeFiles/vellum.dir/src/main.cpp.o" \
 "CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o" \
 "CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o" \
@@ -226,6 +248,7 @@ vellum_OBJECTS = \
 vellum_EXTERNAL_OBJECTS =
 
 vellum: CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o
+vellum: CMakeFiles/vellum.dir/qrc_resources.cpp.o
 vellum: CMakeFiles/vellum.dir/src/main.cpp.o
 vellum: CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o
 vellum: CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o
@@ -244,7 +267,7 @@ vellum: /usr/lib/x86_64-linux-gnu/libGLX.so
 vellum: /usr/lib/x86_64-linux-gnu/libOpenGL.so
 vellum: /usr/lib/x86_64-linux-gnu/libQt6Core.so.6.2.4
 vellum: CMakeFiles/vellum.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable vellum"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable vellum"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/vellum.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -255,7 +278,7 @@ CMakeFiles/vellum.dir/clean:
 	$(CMAKE_COMMAND) -P CMakeFiles/vellum.dir/cmake_clean.cmake
 .PHONY : CMakeFiles/vellum.dir/clean
 
-CMakeFiles/vellum.dir/depend:
+CMakeFiles/vellum.dir/depend: qrc_resources.cpp
 	cd /home/bhargavi/Documents/Vellum/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/bhargavi/Documents/Vellum /home/bhargavi/Documents/Vellum /home/bhargavi/Documents/Vellum/build /home/bhargavi/Documents/Vellum/build /home/bhargavi/Documents/Vellum/build/CMakeFiles/vellum.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/vellum.dir/depend
 

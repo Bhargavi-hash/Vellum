@@ -11,8 +11,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets PrintSupport Sql)
-
+qt_add_resources(vellum_RESOURCES resources.qrc)
 add_executable(vellum
+  ${vellum_RESOURCES}
   src/main.cpp
   src/app/MainWindow.h
   src/app/MainWindow.cpp

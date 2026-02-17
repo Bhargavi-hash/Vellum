@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/bhargavi/Documents/Vellum/build/qrc_resources.cpp" "CMakeFiles/vellum.dir/qrc_resources.cpp.o" "gcc" "CMakeFiles/vellum.dir/qrc_resources.cpp.o.d"
   "/home/bhargavi/Documents/Vellum/src/app/MainWindow.cpp" "CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o" "gcc" "CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o.d"
   "/home/bhargavi/Documents/Vellum/src/canvas/CanvasWidget.cpp" "CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o" "gcc" "CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o.d"
   "/home/bhargavi/Documents/Vellum/src/export/PdfExporter.cpp" "CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.o" "gcc" "CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.o.d"

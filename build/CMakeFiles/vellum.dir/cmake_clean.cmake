@@ -2,6 +2,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/vellum_autogen.dir/AutogenUsed.txt"
   "CMakeFiles/vellum_autogen.dir/ParseCache.txt"
   "vellum_autogen"
+  "CMakeFiles/vellum.dir/qrc_resources.cpp.o"
+  "CMakeFiles/vellum.dir/qrc_resources.cpp.o.d"
   "CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o"
   "CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o.d"
   "CMakeFiles/vellum.dir/src/canvas/CanvasWidget.cpp.o"
@@ -22,6 +24,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/vellum.dir/src/storage/SqliteStore.cpp.o.d"
   "CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o"
   "CMakeFiles/vellum.dir/vellum_autogen/mocs_compilation.cpp.o.d"
+  "qrc_resources.cpp"
   "vellum"
   "vellum.pdb"
 )

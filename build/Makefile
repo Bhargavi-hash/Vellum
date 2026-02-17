@@ -142,6 +142,30 @@ vellum_autogen/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vellum_autogen.dir/build.make CMakeFiles/vellum_autogen.dir/build
 .PHONY : vellum_autogen/fast
 
+qrc_resources.o: qrc_resources.cpp.o
+.PHONY : qrc_resources.o
+
+# target to build an object file
+qrc_resources.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vellum.dir/build.make CMakeFiles/vellum.dir/qrc_resources.cpp.o
+.PHONY : qrc_resources.cpp.o
+
+qrc_resources.i: qrc_resources.cpp.i
+.PHONY : qrc_resources.i
+
+# target to preprocess a source file
+qrc_resources.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vellum.dir/build.make CMakeFiles/vellum.dir/qrc_resources.cpp.i
+.PHONY : qrc_resources.cpp.i
+
+qrc_resources.s: qrc_resources.cpp.s
+.PHONY : qrc_resources.s
+
+# target to generate assembly for a file
+qrc_resources.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vellum.dir/build.make CMakeFiles/vellum.dir/qrc_resources.cpp.s
+.PHONY : qrc_resources.cpp.s
+
 src/app/MainWindow.o: src/app/MainWindow.cpp.o
 .PHONY : src/app/MainWindow.o
 
@@ -392,6 +416,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... vellum_autogen"
 	@echo "... vellum"
+	@echo "... qrc_resources.o"
+	@echo "... qrc_resources.i"
+	@echo "... qrc_resources.s"
 	@echo "... src/app/MainWindow.o"
 	@echo "... src/app/MainWindow.i"
 	@echo "... src/app/MainWindow.s"
