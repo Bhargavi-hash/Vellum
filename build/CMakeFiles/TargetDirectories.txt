@@ -1,4 +1,10 @@
 /home/bhargavi/Documents/Vellum/build/CMakeFiles/vellum.dir
+/home/bhargavi/Documents/Vellum/build/CMakeFiles/package.dir
+/home/bhargavi/Documents/Vellum/build/CMakeFiles/package_source.dir
 /home/bhargavi/Documents/Vellum/build/CMakeFiles/edit_cache.dir
 /home/bhargavi/Documents/Vellum/build/CMakeFiles/rebuild_cache.dir
+/home/bhargavi/Documents/Vellum/build/CMakeFiles/list_install_components.dir
+/home/bhargavi/Documents/Vellum/build/CMakeFiles/install.dir
+/home/bhargavi/Documents/Vellum/build/CMakeFiles/install/local.dir
+/home/bhargavi/Documents/Vellum/build/CMakeFiles/install/strip.dir
 /home/bhargavi/Documents/Vellum/build/CMakeFiles/vellum_autogen.dir

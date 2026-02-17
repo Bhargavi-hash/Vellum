@@ -15,7 +15,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-  setWindowIcon(QIcon(":/assets/Vellum.png"));
+  setWindowIcon(QIcon(":/assets/logo.png"));
   // 1. Apply macOS Global Styling (QSS)
   QString macStyle = R"(
     QMainWindow { background-color: #f6f6f6; }

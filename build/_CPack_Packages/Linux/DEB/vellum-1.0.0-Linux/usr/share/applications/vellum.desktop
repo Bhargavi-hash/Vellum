@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Vellum
+Exec=vellum
+Icon=vellum
+Categories=Office;Graphics;
+Terminal=false

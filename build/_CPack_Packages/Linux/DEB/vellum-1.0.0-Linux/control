@@ -1,0 +1,10 @@
+Architecture: amd64
+Depends: libqt6widgets6, libqt6sql6, libqt6printsupport6
+Description: A multi-modal digital free-hand note-taking application for Linux
+Maintainer: kurukunda.bhargavi@gmail.com
+Package: vellum
+Priority: optional
+Section: devel
+Version: 1.0.0
+Installed-Size: 338
+

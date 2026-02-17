@@ -45,3 +45,23 @@ target_link_libraries(vellum PRIVATE
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(vellum PRIVATE -Wall -Wextra -Wpedantic)
 endif()
+
+# --- Deployment & Packaging ---
+
+# 1. Define where the binary goes (usually /usr/bin)
+install(TARGETS vellum DESTINATION bin)
+
+# 2. Define where the icon goes
+install(FILES assets/logo.png DESTINATION share/icons/hicolor/256x256/apps RENAME vellum.png)
+install(FILES vellum.desktop DESTINATION share/applications)
+
+# 3. Configure CPack for Debian
+set(CPACK_GENERATOR "DEB")
+set(CPACK_PACKAGE_NAME "vellum")
+set(CPACK_PACKAGE_VENDOR "Bhargavi")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A multi-modal digital free-hand note-taking application for Linux")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "kurukunda.bhargavi@gmail.com")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6widgets6, libqt6sql6, libqt6printsupport6") # Essential Qt6 dependencies
+
+include(CPack)

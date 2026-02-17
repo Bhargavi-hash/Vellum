@@ -1,0 +1,3 @@
+/usr/bin/vellum
+/usr/share/icons/hicolor/256x256/apps/vellum.png
+/usr/share/applications/vellum.desktop

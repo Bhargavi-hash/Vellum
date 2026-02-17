@@ -27,6 +27,7 @@ CanvasWidget::CanvasWidget(QWidget *parent) : QWidget(parent)
     setAutoFillBackground(true);
     setAttribute(Qt::WA_OpaquePaintEvent, true);
     setFocusPolicy(Qt::StrongFocus);
+    setTool(Tool::Pen);
     timer_.start();
 }
 
@@ -50,6 +51,36 @@ void CanvasWidget::setTool(Tool tool)
     tool_ = tool;
     isDrawing_ = false;
     draft_.clear();
+    switch (tool) {
+        case Tool::Pen:
+            setCursor(Qt::CrossCursor); // Precise crosshair for drawing
+            break;
+        case Tool::Eraser: {
+            // Create a transparent 32x32 pixmap for the cursor
+            int size = 24; 
+            QPixmap pix(size, size);
+            pix.fill(Qt::transparent);
+
+            QPainter painter(&pix);
+            painter.setRenderHint(QPainter::Antialiasing);
+            
+            // Draw a circle with a thin black outline and semi-transparent center
+            painter.setPen(QPen(Qt::black, 1));
+            painter.setBrush(QColor(255, 255, 255, 100)); 
+            painter.drawEllipse(1, 1, size - 2, size - 2);
+            painter.end();
+
+            // Set the hotspot to the exact center (size/2)
+            setCursor(QCursor(pix, size / 2, size / 2));
+            break;
+        }
+        case Tool::Text:
+            setCursor(Qt::IBeamCursor); // The standard text "I" bar
+            break;
+        case Tool::Select:
+            setCursor(Qt::ArrowCursor); // Standard pointer
+            break;
+    }
     if (editor_ && tool != Tool::Text)
     {
         editor_->hide();
