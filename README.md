@@ -11,6 +11,8 @@ Vellum features smooth ink rendering, infinite and A4-notebook canvas modes, aut
 
 ## Installation & Build
 
+### .deb file Available
+For instant use, download the `/build/vellum-1.0.0-Linux.deb` file on your system and install with your software installer.
 ### 1. Install Dependencies
 You will need a C++17 compatible compiler, CMake, and the Qt6 development libraries.
 
