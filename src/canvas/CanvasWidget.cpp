@@ -403,25 +403,21 @@ void CanvasWidget::tabletEvent(QTabletEvent *e)
     QWidget::tabletEvent(e);
 }
 
-void CanvasWidget::drawPages(QPainter &p) const
-{
-    constexpr double pageW = 595.0, pageH = 842.0, gap = 48.0;
-    const QRectF worldView = viewToWorld(QRectF(QPointF(0, 0), QSizeF(size())));
-    const double stride = pageH + gap;
-    const int firstIdx = std::max(0, (int)std::floor(worldView.top() / stride));
-    const int lastIdx = (int)std::ceil(worldView.bottom() / stride);
-    p.fillRect(rect(), QColor(230, 230, 230));
-    for (int i = firstIdx; i <= lastIdx; ++i)
-    {
-        const QRectF pageWorld(0.0, i * stride, pageW, pageH);
-        const QRectF pageView(worldToView(pageWorld.topLeft()), worldToView(pageWorld.bottomRight()));
-        p.fillRect(pageView.translated(3, 3), QColor(0, 0, 0, 20));
-        p.fillRect(pageView, QColor(255, 255, 255));
-        p.setPen(QPen(QColor(200, 200, 200), 1));
-        p.drawRect(pageView);
-    }
-}
+void CanvasWidget::drawPages(QPainter &p) const {
+    // Background (Desktop)
+    p.fillRect(rect(), QColor("#ececec")); 
 
+    // Page Shadow
+    QRectF pageRect(worldToView(QPointF(0,0)), worldToView(QPointF(595, 842)));
+    p.setBrush(QColor(0, 0, 0, 30)); // Soft shadow
+    p.setPen(Qt::NoPen);
+    p.drawRoundedRect(pageRect.translated(4, 4), 2, 2);
+
+    // Page Surface
+    p.setBrush(Qt::white);
+    p.setPen(QPen(QColor("#dcdcdc"), 1));
+    p.drawRect(pageRect);
+}
 void CanvasWidget::drawStrokes(QPainter &p) const
 {
     auto drawS = [&](const Stroke &s)
