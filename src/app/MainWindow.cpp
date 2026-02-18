@@ -112,27 +112,27 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   auto *toolsGroup = new QActionGroup(this);
   toolsGroup->setExclusive(true);
 
-  auto *actPen = tb->addAction(QIcon::fromTheme("draw-freehand"), "Pen");
+  auto *actPen = tb->addAction(QIcon(":/pen.svg"), "Pen");
   actPen->setCheckable(true);
   actPen->setChecked(true);
   toolsGroup->addAction(actPen);
 
-  auto *actEraser = tb->addAction(QIcon::fromTheme("draw-eraser"), "Eraser");
+  auto *actEraser = tb->addAction(QIcon(":/eraser.svg"), "Eraser");
   actEraser->setCheckable(true);
   toolsGroup->addAction(actEraser);
 
-  auto *actSelect = tb->addAction(QIcon::fromTheme("edit-select"), "Select");
+  auto *actSelect = tb->addAction(QIcon(":/select.svg"), "Select");
   actSelect->setCheckable(true);
   toolsGroup->addAction(actSelect);
 
-  auto *actText = tb->addAction(QIcon::fromTheme("insert-text"), "Text");
+  auto *actText = tb->addAction(QIcon(":/text.svg"), "Text");
   actText->setCheckable(true);
   toolsGroup->addAction(actText);
 
   tb->addSeparator();
 
   // Feature Toggles
-  auto *actSmartShapes = tb->addAction(QIcon::fromTheme("draw-rectangle"), "Smart Shapes");
+  auto *actSmartShapes = tb->addAction(QIcon(":/shapes.svg"), "Smart Shapes");
   actSmartShapes->setCheckable(true);
   actSmartShapes->setChecked(true);
 
