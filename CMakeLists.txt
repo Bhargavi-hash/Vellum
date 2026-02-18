@@ -10,7 +10,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets PrintSupport Sql)
+find_package(Qt6 REQUIRED COMPONENTS Widgets PrintSupport Sql Svg)
+
 qt_add_resources(vellum_RESOURCES resources.qrc)
 add_executable(vellum
   ${vellum_RESOURCES}
@@ -40,6 +41,7 @@ target_link_libraries(vellum PRIVATE
   Qt6::Widgets
   Qt6::PrintSupport
   Qt6::Sql
+  Qt6::Svg
 )
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
