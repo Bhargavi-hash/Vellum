@@ -33,18 +33,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         #FloatingToolbar {
     background-color: white;
     border: none; /* Removed the border */
-    border-radius: 25px;
+    border-radius: 15px;
 }
 
         /* Tool Buttons inside the pill */
         QToolButton {
             border: none;
-            border-radius: 20px;
+            border-radius: 15px;
             padding: 5px;
             background: transparent;
         }
         QToolButton:hover { background-color: #f0f0f0; }
-        QToolButton:checked { background-color: #dbeafe; }
+        QToolButton:checked { background-color: #dbeafe; border-radius: 15px; border: none; }
 
         /* Dropdown Menus */
         QMenu {
@@ -87,11 +87,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
   // --- 3. FLOATING TOOLBAR SETUP (The iPad Pill) ---
   floatingToolbar_ = new QWidget(this);
-  // floatingToolbar_->setAttribute(Qt::WA_TranslucentBackground);
-  // floatingToolbar_->setStyleSheet("#FloatingToolbar { background-color: rgba(255, 255, 255, 230); border-radius: 25px; }");
+ 
   // Create the shadow effect
   auto *shadow = new QGraphicsDropShadowEffect(this);
-  shadow->setBlurRadius(20);             // How "soft" the shadow is
+  shadow->setBlurRadius(30);             // How "soft" the shadow is
   shadow->setXOffset(0);                 // Center it horizontally
   shadow->setYOffset(4);                 // Push it down slightly
   shadow->setColor(QColor(0, 0, 0, 50)); // Subtle black with low alpha (transparency)
@@ -104,11 +103,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   floatingToolbar_->setMinimumWidth(350);
 
   auto *pillLayout = new QHBoxLayout(floatingToolbar_);
-  pillLayout->setContentsMargins(25, 5, 25, 5);
+  pillLayout->setContentsMargins(15, 5, 15, 5);
   pillLayout->setSpacing(10);
-
-  // floatingToolbar_->setParent(this);
-  // floatingToolbar_->show();
 
   auto *toolsGroup = new QActionGroup(this);
   toolsGroup->setExclusive(true);
@@ -132,6 +128,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     btn->setCheckable(true);
     btn->setIcon(QIcon(t.icon));
     btn->setToolTip(t.name);
+    btn->setIconSize(QSize(32, 32));
     btn->setFixedSize(48, 48);
 
     btn->setAutoExclusive(true);
@@ -159,13 +156,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
   for (const QColor &c : colors)
   {
-    QPixmap pix(24, 24);
+    QPixmap pix(32, 32);
     pix.fill(Qt::transparent);
     QPainter p(&pix);
     p.setRenderHint(QPainter::Antialiasing);
     p.setBrush(c);
     p.setPen(Qt::NoPen);
-    p.drawEllipse(2, 2, 20, 20);
+    p.drawEllipse(2, 2, 28, 28);
     p.end();
 
     auto *act = colorMenu->addAction(QIcon(pix), "");
@@ -205,23 +202,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   updateWindowTitle();
   resize(1100, 800);
 }
-// You'll need to add this to the protected section of your MainWindow.h first!
-void MainWindow::paintEvent(QPaintEvent *event) {
-    QMainWindow::paintEvent(event); // Draw the rest of the window
-    
-    if (floatingToolbar_) {
-        QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing);
-        
-        // Match the geometry of your floating toolbar
-        QRect pillRect = floatingToolbar_->geometry();
-        
-        // Draw the semi-transparent white background
-        painter.setBrush(QColor(255, 255, 255, 230)); // 230 is the alpha
-        painter.setPen(Qt::NoPen);
-        painter.drawRoundedRect(pillRect, 25, 25);
-    }
-}
+
 // Ensure the floating bar stays centered when window resizes
 void MainWindow::resizeEvent(QResizeEvent *event)
 {

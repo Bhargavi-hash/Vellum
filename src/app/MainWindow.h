@@ -10,7 +10,7 @@
 #include <QMenu>
 #include <QWidgetAction>
 #include <QHBoxLayout>
-#include <QPaintEvent>
+// #include <QPaintEvent>
 
 class QAction;
 class CanvasWidget;
@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow {
 
   protected:
     void resizeEvent(QResizeEvent *event) override;
-    void paintEvent(QPaintEvent *event) override;
+    // void paintEvent(QPaintEvent *event) override;
 
  private:
   void newDocument();

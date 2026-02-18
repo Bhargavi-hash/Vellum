@@ -373,7 +373,6 @@
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtCore/qvariant.h
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtCore/qvarlengtharray.h
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h
- mdp:/usr/include/x86_64-linux-gnu/qt6/QtGui/QPaintEvent
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtGui/QPainter
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtGui/QResizeEvent
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtGui/QTransform
