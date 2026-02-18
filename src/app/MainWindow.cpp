@@ -12,53 +12,53 @@
 #include "model/Document.h"
 #include "storage/SqliteStore.h"
 #include "export/PdfExporter.h"
+#include <QGraphicsDropShadowEffect>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
   setWindowIcon(QIcon(":/assets/logo.png"));
-  // 1. Apply macOS Global Styling (QSS)
- QString goodnotesStyle = R"(
-    /* The very top document bar */
-    #DocumentBar {
-        background-color: #3b6fb6; /* The specific Goodnotes blue */
-        color: white;
-        border: none;
-        min-height: 40px;
-    }
 
-    /* The main white toolbar */
-    QToolBar#DrawingToolbar {
-        background-color: #ffffff;
-        border: none;
-        border-bottom: 1px solid #e0e0e0; /* Very light separator */
-        spacing: 15px;
-        padding: 5px 10px;
-    }
+  // 1. Updated Stylesheet for Floating Pill Aesthetic
+  QString goodnotesStyle = R"(
+        QMainWindow { background-color: #f2f2f2; }
+        
+        #DocumentBar {
+            background-color: #3b6fb6;
+            color: white;
+            border: none;
+            min-height: 45px;
+        }
 
-    /* Circular/Pill highlight for the active tool */
-    QToolBar#DrawingToolbar QToolButton {
-        background-color: transparent;
-        border-radius: 15px; /* Makes it look like a circle */
-        padding: 5px;
-        color: #444;
-    }
+        /* The Floating Pill Bar */
+        #FloatingToolbar {
+    background-color: white;
+    border: none; /* Removed the border */
+    border-radius: 25px;
+}
 
-    /* The "light blue circle" highlight from your image */
-    QToolBar#DrawingToolbar QToolButton:checked {
-        background-color: #dbeafe; /* Light blue circle background */
-        border: none;
-    }
+        /* Tool Buttons inside the pill */
+        QToolButton {
+            border: none;
+            border-radius: 20px;
+            padding: 5px;
+            background: transparent;
+        }
+        QToolButton:hover { background-color: #f0f0f0; }
+        QToolButton:checked { background-color: #dbeafe; }
 
-    QToolBar#DrawingToolbar QToolButton:hover:!checked {
-        background-color: #f3f4f6;
-    }
+        /* Dropdown Menus */
+        QMenu {
+            background-color: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 12px;
+            padding: 10px;
+        }
 
-    /* Make the Canvas have zero border to merge with the white bar */
-    #CanvasContainer {
-        border: none;
-        background-color: #ffffff;
-    }
-)";
+        #CanvasContainer {
+            border: none;
+            background-color: #ffffff;
+        }
+    )";
   setStyleSheet(goodnotesStyle);
   setWindowTitle("Vellum");
 
@@ -69,121 +69,168 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   canvas_->setDocument(doc_);
   setCentralWidget(canvas_);
 
-  // --- MENU BAR SETUP ---
-  auto *fileMenu = menuBar()->addMenu("&File");
-  actNew_ = fileMenu->addAction(QIcon::fromTheme("document-new"), "&New", this, [this]() { newDocument(); });
-  actOpen_ = fileMenu->addAction(QIcon::fromTheme("document-open"), "&Open…", this, [this]() { openDocument(); });
-  actSave_ = fileMenu->addAction(QIcon::fromTheme("document-save"), "&Save", this, [this]() { saveDocument(); });
-  actSaveAs_ = fileMenu->addAction(QIcon::fromTheme("document-save-as"), "Save &As…", this, [this]() { saveDocumentAs(); });
-  fileMenu->addSeparator();
-  actExportPdf_ = fileMenu->addAction(QIcon::fromTheme("document-export"), "Export &PDF…", this, [this]() { exportPdf(); });
-  fileMenu->addSeparator();
-  fileMenu->addAction(QIcon::fromTheme("application-exit"), "Quit", this, &QWidget::close);
-
-  // --- LAYERED TOOLBAR SETUP ---
-  // 1. Top Document Bar (The Blue Layer)
+  // --- 2. DOCUMENT BAR (Top Blue Bar) ---
   auto *docBar = new QToolBar(this);
   docBar->setObjectName("DocumentBar");
   docBar->setMovable(false);
-  docBar->setFloatable(false);
   addToolBar(Qt::TopToolBarArea, docBar);
 
-  // Add Document Title/Actions here
-  docBar->addAction(actNew_);
-  docBar->addAction(actOpen_);
-  docBar->addAction(actSave_);
-  
-  // Spacer to push things to the right if needed
-  auto* spacer = new QWidget();
+  actNew_ = docBar->addAction(QIcon::fromTheme("document-new"), "New", this, &MainWindow::newDocument);
+  actOpen_ = docBar->addAction(QIcon::fromTheme("document-open"), "Open", this, &MainWindow::openDocument);
+  actSave_ = docBar->addAction(QIcon::fromTheme("document-save"), "Save", this, &MainWindow::saveDocument);
+
+  auto *spacer = new QWidget();
   spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   docBar->addWidget(spacer);
-  docBar->addAction(actExportPdf_);
 
-  // 2. Drawing Toolbar (The White Layer)
-  auto *tb = new QToolBar(this); // Using 'tb' to keep your existing connections working
-  tb->setObjectName("DrawingToolbar");
-  tb->setMovable(false);
-  tb->setFloatable(false);
-  tb->setToolButtonStyle(Qt::ToolButtonIconOnly);
-  tb->setIconSize(QSize(24, 24)); // Slightly larger icons for a mobile feel
-  addToolBar(Qt::TopToolBarArea, tb);
+  actExportPdf_ = docBar->addAction(QIcon::fromTheme("document-export"), "Export", this, &MainWindow::exportPdf);
 
-  // Tool Selection Group
+  // --- 3. FLOATING TOOLBAR SETUP (The iPad Pill) ---
+  floatingToolbar_ = new QWidget(this);
+  // floatingToolbar_->setAttribute(Qt::WA_TranslucentBackground);
+  // floatingToolbar_->setStyleSheet("#FloatingToolbar { background-color: rgba(255, 255, 255, 230); border-radius: 25px; }");
+  // Create the shadow effect
+  auto *shadow = new QGraphicsDropShadowEffect(this);
+  shadow->setBlurRadius(20);             // How "soft" the shadow is
+  shadow->setXOffset(0);                 // Center it horizontally
+  shadow->setYOffset(4);                 // Push it down slightly
+  shadow->setColor(QColor(0, 0, 0, 50)); // Subtle black with low alpha (transparency)
+
+  // Apply it to the toolbar
+  floatingToolbar_->setGraphicsEffect(shadow);
+  floatingToolbar_->setObjectName("FloatingToolbar");
+
+  floatingToolbar_->setFixedHeight(60);
+  floatingToolbar_->setMinimumWidth(350);
+
+  auto *pillLayout = new QHBoxLayout(floatingToolbar_);
+  pillLayout->setContentsMargins(25, 5, 25, 5);
+  pillLayout->setSpacing(10);
+
+  // floatingToolbar_->setParent(this);
+  // floatingToolbar_->show();
+
   auto *toolsGroup = new QActionGroup(this);
   toolsGroup->setExclusive(true);
 
-  auto *actPen = tb->addAction(QIcon(":/pen.svg"), "Pen");
-  actPen->setCheckable(true);
-  actPen->setChecked(true);
-  toolsGroup->addAction(actPen);
+  // Define Tools
+  struct ToolDef
+  {
+    QString name;
+    QString icon;
+    CanvasWidget::Tool type;
+  };
+  QList<ToolDef> tools = {
+      {"Pen", ":/pen.svg", CanvasWidget::Tool::Pen},
+      {"Eraser", ":/eraser.svg", CanvasWidget::Tool::Eraser},
+      {"Select", ":/select.svg", CanvasWidget::Tool::Select},
+      {"Text", ":/text.svg", CanvasWidget::Tool::Text}};
 
-  auto *actEraser = tb->addAction(QIcon(":/eraser.svg"), "Eraser");
-  actEraser->setCheckable(true);
-  toolsGroup->addAction(actEraser);
+  for (const auto &t : tools)
+  {
+    auto *btn = new QToolButton(floatingToolbar_);
+    btn->setCheckable(true);
+    btn->setIcon(QIcon(t.icon));
+    btn->setToolTip(t.name);
+    btn->setFixedSize(48, 48);
 
-  auto *actSelect = tb->addAction(QIcon(":/select.svg"), "Select");
-  actSelect->setCheckable(true);
-  toolsGroup->addAction(actSelect);
+    btn->setAutoExclusive(true);
+    if (t.type == CanvasWidget::Tool::Pen)
+      btn->setChecked(true);
 
-  auto *actText = tb->addAction(QIcon(":/text.svg"), "Text");
-  actText->setCheckable(true);
-  toolsGroup->addAction(actText);
+    pillLayout->addWidget(btn);
+    // toolsGroup->addAction(btn->defaultAction()); // Grouping logic
 
-  tb->addSeparator();
+    connect(btn, &QToolButton::toggled, this, [this, t](bool on)
+            {
+            if (on) canvas_->setTool(t.type); });
+  }
 
-  // Feature Toggles
-  auto *actSmartShapes = tb->addAction(QIcon(":/shapes.svg"), "Smart Shapes");
-  actSmartShapes->setCheckable(true);
-  actSmartShapes->setChecked(true);
+  pillLayout->addSpacing(5);
 
-  tb->addSeparator();
+  // --- 4. COLOR DROPDOWN ---
+  auto *colorBtn = new QToolButton(floatingToolbar_);
+  colorBtn->setIcon(QIcon(":/palette.svg")); // Ensure you have a palette icon
+  colorBtn->setPopupMode(QToolButton::InstantPopup);
+  colorBtn->setFixedSize(40, 40);
 
-  // Text Property Widgets (Directly in Toolbar)
-  fontCombo = new QFontComboBox(this);
-  fontCombo->setMaximumWidth(160);
-  tb->addWidget(fontCombo);
+  auto *colorMenu = new QMenu(colorBtn);
+  const QList<QColor> colors = {Qt::black, Qt::red, Qt::blue, QColor("#27ae60"), QColor("#f39c12")};
 
-  sizeSpin = new QSpinBox(this);
+  for (const QColor &c : colors)
+  {
+    QPixmap pix(24, 24);
+    pix.fill(Qt::transparent);
+    QPainter p(&pix);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setBrush(c);
+    p.setPen(Qt::NoPen);
+    p.drawEllipse(2, 2, 20, 20);
+    p.end();
+
+    auto *act = colorMenu->addAction(QIcon(pix), "");
+    connect(act, &QAction::triggered, this, [this, c]()
+            { canvas_->setPenColor(c); });
+  }
+  colorBtn->setMenu(colorMenu);
+  pillLayout->addWidget(colorBtn);
+
+  // --- 5. TEXT OPTIONS DROPDOWN ---
+  auto *textOptBtn = new QToolButton(floatingToolbar_);
+  textOptBtn->setIcon(QIcon(":/fonts.svg"));
+  textOptBtn->setPopupMode(QToolButton::InstantPopup);
+  textOptBtn->setFixedSize(40, 40);
+
+  auto *textMenu = new QMenu(textOptBtn);
+
+  // Font Combo in Menu
+  auto *fontAct = new QWidgetAction(textMenu);
+  fontCombo = new QFontComboBox();
+  fontAct->setDefaultWidget(fontCombo);
+  textMenu->addAction(fontAct);
+
+  // Size Spinbox in Menu
+  auto *sizeAct = new QWidgetAction(textMenu);
+  sizeSpin = new QSpinBox();
   sizeSpin->setRange(6, 99);
-  sizeSpin->setValue(12);
   sizeSpin->setSuffix(" pt");
-  tb->addWidget(sizeSpin);
+  sizeAct->setDefaultWidget(sizeSpin);
+  textMenu->addAction(sizeAct);
 
-  tb->addSeparator();
+  textOptBtn->setMenu(textMenu);
+  pillLayout->addWidget(textOptBtn);
 
-  // View Mode Group
-  auto *modeGroup = new QActionGroup(this);
-  modeGroup->setExclusive(true);
-  auto *actInfinite = tb->addAction("Infinite");
-  actInfinite->setCheckable(true);
-  actInfinite->setChecked(true);
-  modeGroup->addAction(actInfinite);
-
-  auto *actA4 = tb->addAction("A4");
-  actA4->setCheckable(true);
-  modeGroup->addAction(actA4);
-
-  // Load secondary UI elements
-  createColorPalette(tb); 
-
-  // --- CONNECTIONS ---
-  connect(actPen, &QAction::toggled, this, [this](bool on) { if (on) canvas_->setTool(CanvasWidget::Tool::Pen); });
-  connect(actEraser, &QAction::toggled, this, [this](bool on) { if (on) canvas_->setTool(CanvasWidget::Tool::Eraser); });
-  connect(actSelect, &QAction::toggled, this, [this](bool on) { if (on) canvas_->setTool(CanvasWidget::Tool::Select); });
-  connect(actText, &QAction::toggled, this, [this](bool on) { if (on) canvas_->setTool(CanvasWidget::Tool::Text); });
-  
-  connect(actSmartShapes, &QAction::toggled, this, [this](bool on) { canvas_->setSmartShapesEnabled(on); });
-  
-  connect(actInfinite, &QAction::toggled, this, [this](bool on) { if (on) canvas_->setViewMode(CanvasWidget::ViewMode::Infinite); });
-  connect(actA4, &QAction::toggled, this, [this](bool on) { if (on) canvas_->setViewMode(CanvasWidget::ViewMode::A4Notebook); });
-
-  connect(fontCombo, &QFontComboBox::currentFontChanged, this, [this](const QFont &f) { canvas_->updateFontFamily(f.family()); });
-  connect(sizeSpin, &QSpinBox::valueChanged, this, [this](int s) { canvas_->updateFontSize(s); });
-
-  connect(doc_, &Document::changed, this, [this]() { updateWindowTitle(); });
-
+  // Initial positioning
+  floatingToolbar_->raise();
   updateWindowTitle();
   resize(1100, 800);
+}
+// You'll need to add this to the protected section of your MainWindow.h first!
+void MainWindow::paintEvent(QPaintEvent *event) {
+    QMainWindow::paintEvent(event); // Draw the rest of the window
+    
+    if (floatingToolbar_) {
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+        
+        // Match the geometry of your floating toolbar
+        QRect pillRect = floatingToolbar_->geometry();
+        
+        // Draw the semi-transparent white background
+        painter.setBrush(QColor(255, 255, 255, 230)); // 230 is the alpha
+        painter.setPen(Qt::NoPen);
+        painter.drawRoundedRect(pillRect, 25, 25);
+    }
+}
+// Ensure the floating bar stays centered when window resizes
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+  QMainWindow::resizeEvent(event);
+  if (floatingToolbar_)
+  {
+    int x = (width() - floatingToolbar_->width()) / 2;
+    floatingToolbar_->move(x, 70); // 70px down to clear the blue bar
+  }
 }
 void MainWindow::newDocument()
 {
@@ -215,18 +262,17 @@ void MainWindow::createColorPalette(QToolBar *targetBar) // Use the pointer we p
 
     // Add action directly to targetBar (DrawingToolbar)
     QAction *action = targetBar->addAction(QIcon(pix), "");
-    connect(action, &QAction::triggered, [this, color]() { 
-        canvas_->setPenColor(color); 
-    });
-}
+    connect(action, &QAction::triggered, [this, color]()
+            { canvas_->setPenColor(color); });
+  }
 
   targetBar->addSeparator();
   // Use a nice icon or symbol for the custom picker instead of text
   QAction *customColor = targetBar->addAction(QIcon::fromTheme("color-management"), "Custom");
-  connect(customColor, &QAction::triggered, [this]() {
+  connect(customColor, &QAction::triggered, [this]()
+          {
         QColor c = QColorDialog::getColor(Qt::black, this);
-        if (c.isValid()) canvas_->setPenColor(c); 
-  });
+        if (c.isValid()) canvas_->setPenColor(c); });
 }
 void MainWindow::setupTextToolbar()
 {

@@ -70,6 +70,13 @@ include CMakeFiles/vellum.dir/progress.make
 include CMakeFiles/vellum.dir/flags.make
 
 qrc_resources.cpp: ../assets/logo.png
+qrc_resources.cpp: ../assets/draw-svgrepo-com.svg
+qrc_resources.cpp: ../assets/eraser-svgrepo-com.svg
+qrc_resources.cpp: ../assets/text-selection-svgrepo-com.svg
+qrc_resources.cpp: ../assets/select-svgrepo-com.svg
+qrc_resources.cpp: ../assets/shapes-1-svgrepo-com.svg
+qrc_resources.cpp: ../assets/pallete-2-svgrepo-com.svg
+qrc_resources.cpp: ../assets/font-x-generic-svgrepo-com.svg
 qrc_resources.cpp: resources.qrc.depends
 qrc_resources.cpp: /usr/lib/qt6/libexec/rcc
 qrc_resources.cpp: ../resources.qrc
@@ -261,11 +268,12 @@ vellum: CMakeFiles/vellum.dir/src/export/PdfExporter.cpp.o
 vellum: CMakeFiles/vellum.dir/build.make
 vellum: /usr/lib/x86_64-linux-gnu/libQt6PrintSupport.so.6.2.4
 vellum: /usr/lib/x86_64-linux-gnu/libQt6Sql.so.6.2.4
+vellum: /usr/lib/x86_64-linux-gnu/libQt6Svg.so.6.2.4
 vellum: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.2.4
 vellum: /usr/lib/x86_64-linux-gnu/libQt6Gui.so.6.2.4
+vellum: /usr/lib/x86_64-linux-gnu/libQt6Core.so.6.2.4
 vellum: /usr/lib/x86_64-linux-gnu/libGLX.so
 vellum: /usr/lib/x86_64-linux-gnu/libOpenGL.so
-vellum: /usr/lib/x86_64-linux-gnu/libQt6Core.so.6.2.4
 vellum: CMakeFiles/vellum.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/bhargavi/Documents/Vellum/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable vellum"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/vellum.dir/link.txt --verbose=$(VERBOSE)

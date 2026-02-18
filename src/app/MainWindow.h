@@ -5,15 +5,28 @@
 #include <QFontComboBox>
 #include <QSpinBox>
 #include <QPainter>
+#include <QResizeEvent>
+#include <QToolButton>
+#include <QMenu>
+#include <QWidgetAction>
+#include <QHBoxLayout>
+#include <QPaintEvent>
 
 class QAction;
 class CanvasWidget;
 class Document;
+class QWidget;
+class QSpinBox;
+class QFontComboBox;
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
  public:
   explicit MainWindow(QWidget* parent = nullptr);
+
+  protected:
+    void resizeEvent(QResizeEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
  private:
   void newDocument();
@@ -30,6 +43,8 @@ class MainWindow : public QMainWindow {
   Document* doc_ = nullptr;
 
   QString currentPath_;
+
+  QWidget* floatingToolbar_ = nullptr;
 
   QAction* actNew_ = nullptr;
   QAction* actOpen_ = nullptr;

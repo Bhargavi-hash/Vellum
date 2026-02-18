@@ -1,5 +1,12 @@
 <!DOCTYPE RCC><RCC version="1.1">
-<qresource>
+<qresource prefix="/">
     <file>assets/logo.png</file>
+    <file alias="pen.svg">assets/draw-svgrepo-com.svg</file>
+    <file alias="eraser.svg">assets/eraser-svgrepo-com.svg</file>
+    <file alias="text.svg">assets/text-selection-svgrepo-com.svg</file>
+    <file alias="select.svg">assets/select-svgrepo-com.svg</file>
+    <file alias="shapes.svg">assets/shapes-1-svgrepo-com.svg</file>
+    <file alias="palette.svg">assets/pallete-2-svgrepo-com.svg</file>
+    <file alias="fonts.svg">assets/font-x-generic-svgrepo-com.svg</file>
 </qresource>
 </RCC>

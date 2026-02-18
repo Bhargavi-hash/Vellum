@@ -277,6 +277,9 @@ Qt6PrintSupport_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/Qt6PrintSupport
 //The directory containing a CMake configuration file for Qt6Sql.
 Qt6Sql_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/Qt6Sql
 
+//The directory containing a CMake configuration file for Qt6Svg.
+Qt6Svg_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/Qt6Svg
+
 //The directory containing a CMake configuration file for Qt6WidgetsTools.
 Qt6WidgetsTools_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/Qt6WidgetsTools
 
