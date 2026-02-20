@@ -7,6 +7,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QToolBar>
+#include <QPushButton>
 
 #include "canvas/CanvasWidget.h"
 #include "model/Document.h"
@@ -51,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             background-color: white;
             border: 1px solid #d0d0d0;
             border-radius: 15px;
-            padding: 2px;
+            // padding: 2px;
         }
 
         #CanvasContainer {
@@ -205,21 +206,56 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   textOptBtn->setIconSize(QSize(32, 32));
 
   auto *textMenu = new QMenu(textOptBtn);
+  auto *textContainer = new QWidget(textMenu);
+auto *textLayout = new QHBoxLayout(textContainer);
+textLayout->setContentsMargins(10, 5, 10, 5);
+textLayout->setSpacing(15);
 
-  // Font Combo in Menu
-  auto *fontAct = new QWidgetAction(textMenu);
-  fontCombo = new QFontComboBox();
-  fontAct->setDefaultWidget(fontCombo);
-  textMenu->addAction(fontAct);
+// A. Curated Font Selection (Simplified)
+struct FontDef { QString label; QString family; };
+QList<FontDef> curatedFonts = {
+    {"Sans", "Arial"},
+    {"Serif", "Times New Roman"},
+    {"Mono", "Courier New"}
+};
 
-  // Size Spinbox in Menu
-  auto *sizeAct = new QWidgetAction(textMenu);
-  sizeSpin = new QSpinBox();
-  sizeSpin->setRange(6, 99);
-  sizeSpin->setSuffix(" pt");
-  sizeAct->setDefaultWidget(sizeSpin);
-  textMenu->addAction(sizeAct);
+  for (const auto &f : curatedFonts) {
+    auto *fBtn = new QPushButton(f.label, textContainer);
+    fBtn->setFixedWidth(50);
+    fBtn->setStyleSheet("QPushButton { border: 1px solid #d0d0d0; border-radius: 5px; padding: 4px; font-size: 10px; }"
+                        "QPushButton:hover { background: #f0f0f0; }");
+    
+    connect(fBtn, &QPushButton::clicked, this, [this, f, textMenu]() {
+        canvas_->updateFontFamily(f.family);
+        // textMenu->close(); // Uncomment if you want it to close on click
+    });
+    textLayout->addWidget(fBtn);
+}
 
+// B. Separator line
+QFrame* line = new QFrame();
+line->setFrameShape(QFrame::VLine);
+line->setFrameShadow(QFrame::Sunken);
+line->setStyleSheet("color: #d0d0d0;");
+textLayout->addWidget(line);
+
+// C. Simplified Size Spinbox
+sizeSpin = new QSpinBox(textContainer);
+sizeSpin->setRange(8, 72);
+sizeSpin->setValue(12);
+sizeSpin->setSuffix(" pt");
+sizeSpin->setFixedWidth(70);
+sizeSpin->setStyleSheet("border: 1px solid #d0d0d0; border-radius: 5px; padding: 2px;");
+textLayout->addWidget(sizeSpin);
+
+connect(sizeSpin, &QSpinBox::valueChanged, this, [this](int s) {
+    canvas_->updateFontSize(s);
+});
+
+// Wrap and add to menu
+auto *textAction = new QWidgetAction(textMenu);
+textAction->setDefaultWidget(textContainer);
+textMenu->addAction(textAction);
   textOptBtn->setMenu(textMenu);
   pillLayout->addWidget(textOptBtn);
 

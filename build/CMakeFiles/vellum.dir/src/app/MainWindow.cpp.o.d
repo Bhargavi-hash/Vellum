@@ -464,6 +464,8 @@ CMakeFiles/vellum.dir/src/app/MainWindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmessagebox.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QToolBar \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtoolbar.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h \
  /home/bhargavi/Documents/Vellum/src/canvas/CanvasWidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/QColor \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qcolor.h \
