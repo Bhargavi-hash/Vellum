@@ -50,8 +50,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         QMenu {
             background-color: white;
             border: 1px solid #d0d0d0;
-            border-radius: 12px;
-            padding: 10px;
+            border-radius: 15px;
+            padding: 2px;
         }
 
         #CanvasContainer {
@@ -87,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
   // --- 3. FLOATING TOOLBAR SETUP (The iPad Pill) ---
   floatingToolbar_ = new QWidget(this);
- 
+
   // Create the shadow effect
   auto *shadow = new QGraphicsDropShadowEffect(this);
   shadow->setBlurRadius(30);             // How "soft" the shadow is
@@ -149,26 +149,51 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   auto *colorBtn = new QToolButton(floatingToolbar_);
   colorBtn->setIcon(QIcon(":/palette.svg")); // Ensure you have a palette icon
   colorBtn->setPopupMode(QToolButton::InstantPopup);
-  colorBtn->setFixedSize(40, 40);
+  colorBtn->setFixedSize(48, 48);
+  colorBtn->setIconSize(QSize(32, 32));
 
   auto *colorMenu = new QMenu(colorBtn);
+  // Create a container widget and a horizontal layout
+  auto *colorContainer = new QWidget(colorMenu);
+  auto *hLayout = new QHBoxLayout(colorContainer);
+  hLayout->setContentsMargins(10, 5, 10, 5);
+  hLayout->setSpacing(10);
+
   const QList<QColor> colors = {Qt::black, Qt::red, Qt::blue, QColor("#27ae60"), QColor("#f39c12")};
 
   for (const QColor &c : colors)
   {
-    QPixmap pix(32, 32);
+    // Create a small button for each color instead of a menu action
+    auto *cBtn = new QToolButton(colorContainer);
+    cBtn->setFixedSize(32, 32);
+
+    QPixmap pix(24, 24);
     pix.fill(Qt::transparent);
     QPainter p(&pix);
     p.setRenderHint(QPainter::Antialiasing);
     p.setBrush(c);
     p.setPen(Qt::NoPen);
-    p.drawEllipse(2, 2, 28, 28);
+    p.drawEllipse(0, 0, 24, 24);
     p.end();
 
-    auto *act = colorMenu->addAction(QIcon(pix), "");
-    connect(act, &QAction::triggered, this, [this, c]()
-            { canvas_->setPenColor(c); });
+    cBtn->setIcon(QIcon(pix));
+    cBtn->setIconSize(QSize(24, 24));
+    cBtn->setStyleSheet("border: none; border-radius: 16px;");
+    cBtn->setCursor(Qt::PointingHandCursor);
+
+    connect(cBtn, &QToolButton::clicked, this, [this, c, colorMenu]()
+            {
+              canvas_->setPenColor(c);
+              colorMenu->close(); // Close the menu after selection
+            });
+
+    hLayout->addWidget(cBtn);
   }
+
+  // Wrap the container in a QWidgetAction
+  auto *colorAction = new QWidgetAction(colorMenu);
+  colorAction->setDefaultWidget(colorContainer);
+  colorMenu->addAction(colorAction);
   colorBtn->setMenu(colorMenu);
   pillLayout->addWidget(colorBtn);
 
@@ -176,7 +201,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   auto *textOptBtn = new QToolButton(floatingToolbar_);
   textOptBtn->setIcon(QIcon(":/fonts.svg"));
   textOptBtn->setPopupMode(QToolButton::InstantPopup);
-  textOptBtn->setFixedSize(40, 40);
+  textOptBtn->setFixedSize(48, 48);
+  textOptBtn->setIconSize(QSize(32, 32));
 
   auto *textMenu = new QMenu(textOptBtn);
 

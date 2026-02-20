@@ -11,6 +11,8 @@
 #include <QWidgetAction>
 #include <QHBoxLayout>
 // #include <QPaintEvent>
+#include <QFrame>
+
 
 class QAction;
 class CanvasWidget;

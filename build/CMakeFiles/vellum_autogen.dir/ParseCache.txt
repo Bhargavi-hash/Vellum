@@ -412,6 +412,7 @@
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtGui/qvectornd.h
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFontComboBox
+ mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFrame
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMainWindow
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMenu
