@@ -17,7 +17,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-  setWindowIcon(QIcon(":/assets/logo.png"));
+  setWindowIcon(QIcon(":/assets/vellum-icon.png"));
 
   // 1. Updated Stylesheet for Floating Pill Aesthetic
   QString goodnotesStyle = R"(

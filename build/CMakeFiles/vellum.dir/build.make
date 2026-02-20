@@ -69,7 +69,7 @@ include CMakeFiles/vellum.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/vellum.dir/flags.make
 
-qrc_resources.cpp: ../assets/logo.png
+qrc_resources.cpp: ../assets/vellum-icon.png
 qrc_resources.cpp: ../assets/draw-svgrepo-com.svg
 qrc_resources.cpp: ../assets/eraser-svgrepo-com.svg
 qrc_resources.cpp: ../assets/text-selection-svgrepo-com.svg

@@ -1,6 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.1">
 <qresource prefix="/">
-    <file>assets/logo.png</file>
+    <file>assets/vellum-icon.png</file>
     <file alias="pen.svg">assets/draw-svgrepo-com.svg</file>
     <file alias="eraser.svg">assets/eraser-svgrepo-com.svg</file>
     <file alias="text.svg">assets/text-selection-svgrepo-com.svg</file>
