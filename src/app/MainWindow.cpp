@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QToolBar>
 #include <QPushButton>
+#include <QFrame>
 
 #include "canvas/CanvasWidget.h"
 #include "model/Document.h"
@@ -32,10 +33,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
         /* The Floating Pill Bar */
         #FloatingToolbar {
-    background-color: white;
-    border: none; /* Removed the border */
-    border-radius: 15px;
-}
+          background-color: white;
+          border: none; /* Removed the border */
+          border-radius: 15px;
+        }
+
+        /* Target the dropdown list of the ComboBox */
+        QComboBox QAbstractItemView {
+            border: 1px solid #f0f0f0;
+            background-color: white;
+            selection-background-color: #dbeafe; /* The light blue highlight */
+            selection-color: #3b6fb6;            /* Ensure text stays blue/dark when selected */
+            outline: none;                       /* Removes the dotted focus line */
+        }
+
+        /* Fix for the "white text" issue during hover */
+        QComboBox QAbstractItemView::item:hover {
+            background-color: #f0f0f0;
+            color: black; 
+        }
 
         /* Tool Buttons inside the pill */
         QToolButton {
@@ -50,9 +66,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         /* Dropdown Menus */
         QMenu {
             background-color: white;
-            border: 1px solid #d0d0d0;
+            border: none;
             border-radius: 15px;
-            // padding: 2px;
+            padding: 5px;
+        }
+
+        #MenuContainer {
+            border: none;
+            background-color: transparent;
         }
 
         #CanvasContainer {
@@ -198,7 +219,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   colorBtn->setMenu(colorMenu);
   pillLayout->addWidget(colorBtn);
 
-  // --- 5. TEXT OPTIONS DROPDOWN ---
+  // --- 5. TEXT OPTIONS DROPDOWN (Pill Style) ---
   auto *textOptBtn = new QToolButton(floatingToolbar_);
   textOptBtn->setIcon(QIcon(":/fonts.svg"));
   textOptBtn->setPopupMode(QToolButton::InstantPopup);
@@ -206,59 +227,71 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   textOptBtn->setIconSize(QSize(32, 32));
 
   auto *textMenu = new QMenu(textOptBtn);
+  // textMenu->setWindowFlags(textMenu->windowFlags() | Qt::FramelessWindowHint);
+  // textMenu->setAttribute(Qt::WA_TranslucentBackground);
   auto *textContainer = new QWidget(textMenu);
-auto *textLayout = new QHBoxLayout(textContainer);
-textLayout->setContentsMargins(10, 5, 10, 5);
-textLayout->setSpacing(15);
+  textContainer->setObjectName("MenuContainer");
+  auto *textLayout = new QHBoxLayout(textContainer);
+  textLayout->setContentsMargins(10, 5, 10, 5);
+  textLayout->setSpacing(10);
 
-// A. Curated Font Selection (Simplified)
-struct FontDef { QString label; QString family; };
-QList<FontDef> curatedFonts = {
-    {"Sans", "Arial"},
-    {"Serif", "Times New Roman"},
-    {"Mono", "Courier New"}
-};
+  // A. Curated Font Dropdown
+  auto *fontPicker = new QComboBox(textContainer);
+  fontPicker->addItems({"Sans Serif", "Serif", "Monospace"});
+  fontPicker->setFixedWidth(110);
 
-  for (const auto &f : curatedFonts) {
-    auto *fBtn = new QPushButton(f.label, textContainer);
-    fBtn->setFixedWidth(50);
-    fBtn->setStyleSheet("QPushButton { border: 1px solid #d0d0d0; border-radius: 5px; padding: 4px; font-size: 10px; }"
-                        "QPushButton:hover { background: #f0f0f0; }");
-    
-    connect(fBtn, &QPushButton::clicked, this, [this, f, textMenu]() {
-        canvas_->updateFontFamily(f.family);
-        // textMenu->close(); // Uncomment if you want it to close on click
-    });
-    textLayout->addWidget(fBtn);
-}
+  // fontPicker->view()->setFrameShape(QFrame::NoFrame);
+  fontPicker->setStyleSheet(R"(
+    QComboBox { 
+        border: 1px solid #f0f0f0; 
+        border-radius: 8px; 
+        padding: 4px 10px; 
+        background: #f8f8f8;
+        color: #333;
+    }
+    QComboBox::drop-down { 
+        border: none; 
+        subcontrol-origin: padding;
+        subcontrol-position: top right;
+        width: 15px;
+    }
+    /* Use a Unicode character as the arrow */
+    QComboBox::down-arrow {
+        image: none; /* Disable image requirement */
+        border: none;
+    }
+)");
 
-// B. Separator line
-QFrame* line = new QFrame();
-line->setFrameShape(QFrame::VLine);
-line->setFrameShadow(QFrame::Sunken);
-line->setStyleSheet("color: #d0d0d0;");
-textLayout->addWidget(line);
+  connect(fontPicker, &QComboBox::currentTextChanged, this, [this](const QString &text)
+          {
+    if (text == "Sans Serif") canvas_->updateFontFamily("Arial");
+    else if (text == "Serif") canvas_->updateFontFamily("Times New Roman");
+    else canvas_->updateFontFamily("Courier New"); });
+  textLayout->addWidget(fontPicker);
 
-// C. Simplified Size Spinbox
-sizeSpin = new QSpinBox(textContainer);
-sizeSpin->setRange(8, 72);
-sizeSpin->setValue(12);
-sizeSpin->setSuffix(" pt");
-sizeSpin->setFixedWidth(70);
-sizeSpin->setStyleSheet("border: 1px solid #d0d0d0; border-radius: 5px; padding: 2px;");
-textLayout->addWidget(sizeSpin);
+  // B. Vertical Line
+  QFrame *line = new QFrame();
+  line->setFrameShape(QFrame::VLine);
+  line->setStyleSheet("color: #eeeeee;");
+  textLayout->addWidget(line);
 
-connect(sizeSpin, &QSpinBox::valueChanged, this, [this](int s) {
-    canvas_->updateFontSize(s);
-});
+  // C. Size Spinbox
+  sizeSpin = new QSpinBox(textContainer);
+  sizeSpin->setRange(8, 72);
+  sizeSpin->setValue(12);
+  sizeSpin->setSuffix(" pt");
+  sizeSpin->setFixedWidth(70);
+  sizeSpin->setStyleSheet("border: 1px solid #f0f0f0; border-radius: 8px; padding: 4px;");
+  textLayout->addWidget(sizeSpin);
 
-// Wrap and add to menu
-auto *textAction = new QWidgetAction(textMenu);
-textAction->setDefaultWidget(textContainer);
-textMenu->addAction(textAction);
+  connect(sizeSpin, &QSpinBox::valueChanged, this, [this](int s)
+          { canvas_->updateFontSize(s); });
+
+  auto *textAction = new QWidgetAction(textMenu);
+  textAction->setDefaultWidget(textContainer);
+  textMenu->addAction(textAction);
   textOptBtn->setMenu(textMenu);
   pillLayout->addWidget(textOptBtn);
-
   // Initial positioning
   floatingToolbar_->raise();
   updateWindowTitle();
