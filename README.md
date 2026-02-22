@@ -1,4 +1,4 @@
-# Vellum
+# Vellum (Under Development)
 
 Extremely lightweight vector note-taking for Linux (Qt6). 
 Vellum features smooth ink rendering, infinite and A4-notebook canvas modes, automatic geometric shape recognition, and SQLite-based persistence.
@@ -51,3 +51,6 @@ cmake --build build -j$(nproc)
 - `src/storage/:` SQLite backend for document persistence.
 - `src/shapes/:` Heuristic-based geometric shape recognizer.
 - `src/export/:` PDF generation logic using QPdfWriter.
+
+## Contributions
+This is a open source project and you are welcome to make contributions. 
