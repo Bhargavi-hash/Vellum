@@ -10,6 +10,8 @@
 #include <QMenu>
 #include <QWidgetAction>
 #include <QHBoxLayout>
+#include <QPushButton>
+#include <QComboBox>
 // #include <QPaintEvent>
 #include <QFrame>
 
@@ -34,6 +36,7 @@ class MainWindow : public QMainWindow {
   void newDocument();
   void openDocument();
   bool saveDocument();
+  void renameDocument();
   bool saveDocumentAs();
   void exportPdf();
   void createColorPalette(QToolBar* targetBar);
@@ -56,5 +59,7 @@ class MainWindow : public QMainWindow {
 
   QFontComboBox* fontCombo;
   QSpinBox* sizeSpin;
+
+  QPushButton* titleBtn_ = nullptr; // Add this line
   void setupTextToolbar();
 };

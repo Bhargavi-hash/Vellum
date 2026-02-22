@@ -411,11 +411,13 @@
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtGui/qvector2d.h
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtGui/qvectornd.h
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h
+ mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QComboBox
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFontComboBox
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFrame
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMainWindow
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMenu
+ mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QSpinBox
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QToolButton
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidgetAction
@@ -432,6 +434,7 @@
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmainwindow.h
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmenu.h
+ mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qrubberband.h
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h
  mdp:/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qslider.h

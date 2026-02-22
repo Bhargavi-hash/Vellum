@@ -9,6 +9,7 @@
 #include <QToolBar>
 #include <QPushButton>
 #include <QFrame>
+#include <QInputDialog>
 
 #include "canvas/CanvasWidget.h"
 #include "model/Document.h"
@@ -100,6 +101,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   actNew_ = docBar->addAction(QIcon::fromTheme("document-new"), "New", this, &MainWindow::newDocument);
   actOpen_ = docBar->addAction(QIcon::fromTheme("document-open"), "Open", this, &MainWindow::openDocument);
   actSave_ = docBar->addAction(QIcon::fromTheme("document-save"), "Save", this, &MainWindow::saveDocument);
+
+  // Replace the empty spacer with a clickable title button
+  titleBtn_ = new QPushButton("Untitled", this);
+  titleBtn_->setStyleSheet("QPushButton { background: transparent; color: white; font-weight: bold; border: none; font-size: 16px; } "
+                           "QPushButton:hover { color: #dbeafe; }");
+  connect(titleBtn_, &QPushButton::clicked, this, &MainWindow::renameDocument);
+  docBar->addWidget(titleBtn_);
 
   auto *spacer = new QWidget();
   spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -408,6 +416,34 @@ bool MainWindow::saveDocument()
   return true;
 }
 
+
+void MainWindow::renameDocument()
+{
+    bool ok;
+    QString oldName = currentPath_.isEmpty() ? "Untitled" : QFileInfo(currentPath_).baseName();
+    
+    QString newName = QInputDialog::getText(this, "Rename Document",
+                                         "Enter new name:", QLineEdit::Normal,
+                                         oldName, &ok);
+    if (ok && !newName.isEmpty()) {
+        if (currentPath_.isEmpty()) {
+            // If it's a brand new file, just update the title for now
+            setWindowTitle(newName + " — Vellum");
+        } else {
+            // Physically rename the file on disk
+            QFile file(currentPath_);
+            QFileInfo info(currentPath_);
+            QString newPath = info.absolutePath() + "/" + newName + ".vellum";
+            
+            if (file.rename(newPath)) {
+                setCurrentPath(newPath);
+            } else {
+                QMessageBox::warning(this, "Rename Failed", "Could not rename file. It might be open elsewhere.");
+            }
+        }
+    }
+}
+
 bool MainWindow::saveDocumentAs()
 {
   const QString path = QFileDialog::getSaveFileName(this, "Save Vellum note", currentPath_,
@@ -461,4 +497,9 @@ void MainWindow::updateWindowTitle()
 {
   const QString name = currentPath_.isEmpty() ? "Untitled" : QFileInfo(currentPath_).fileName();
   setWindowTitle(QString("%1 — Vellum").arg(name));
+
+  // Update our custom button in the blue bar
+  if (titleBtn_) {
+      titleBtn_->setText(name);
+  }
 }
