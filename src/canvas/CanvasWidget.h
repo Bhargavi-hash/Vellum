@@ -27,6 +27,10 @@ class CanvasWidget : public QWidget {
 
   explicit CanvasWidget(QWidget* parent = nullptr);
 
+  enum class PageType { Plain, Grid, Ruled };
+  // Method to set it
+  void setPageType(PageType type) { pageType_ = type; update(); }
+  
   void setDocument(Document* doc);
   Document* document() const { return doc_; }
 
@@ -68,6 +72,9 @@ class CanvasWidget : public QWidget {
     float pressure = 1.0f;
     qint64 tMs = 0;
   };
+
+  PageType pageType_ = PageType::Plain;
+
 
   QPointF viewToWorld(const QPointF& viewPos) const;
   QPointF worldToView(const QPointF& worldPos) const;

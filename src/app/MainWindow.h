@@ -56,6 +56,7 @@ class MainWindow : public QMainWindow {
   QAction* actSave_ = nullptr;
   QAction* actSaveAs_ = nullptr;
   QAction* actExportPdf_ = nullptr;
+  QAction *actToggleGrid_ = nullptr;
 
   QFontComboBox* fontCombo;
   QSpinBox* sizeSpin;

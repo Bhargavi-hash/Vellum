@@ -115,6 +115,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
   actExportPdf_ = docBar->addAction(QIcon::fromTheme("document-export"), "Export", this, &MainWindow::exportPdf);
 
+  // ------ PAGE LAYOUT: GRID TOGGLE ACTION ------
+  actToggleGrid_ = docBar->addAction(QIcon::fromTheme("view-grid"), "Grid");
+  actToggleGrid_->setCheckable(true); // Makes it look "pressed" when active
+
+  connect(actToggleGrid_, &QAction::toggled, this, [this](bool checked)
+          { canvas_->setPageType(checked ? CanvasWidget::PageType::Grid
+                                         : CanvasWidget::PageType::Plain); });
   // --- 3. FLOATING TOOLBAR SETUP (The iPad Pill) ---
   floatingToolbar_ = new QWidget(this);
 
@@ -416,32 +423,38 @@ bool MainWindow::saveDocument()
   return true;
 }
 
-
 void MainWindow::renameDocument()
 {
-    bool ok;
-    QString oldName = currentPath_.isEmpty() ? "Untitled" : QFileInfo(currentPath_).baseName();
-    
-    QString newName = QInputDialog::getText(this, "Rename Document",
-                                         "Enter new name:", QLineEdit::Normal,
-                                         oldName, &ok);
-    if (ok && !newName.isEmpty()) {
-        if (currentPath_.isEmpty()) {
-            // If it's a brand new file, just update the title for now
-            setWindowTitle(newName + " — Vellum");
-        } else {
-            // Physically rename the file on disk
-            QFile file(currentPath_);
-            QFileInfo info(currentPath_);
-            QString newPath = info.absolutePath() + "/" + newName + ".vellum";
-            
-            if (file.rename(newPath)) {
-                setCurrentPath(newPath);
-            } else {
-                QMessageBox::warning(this, "Rename Failed", "Could not rename file. It might be open elsewhere.");
-            }
-        }
+  bool ok;
+  QString oldName = currentPath_.isEmpty() ? "Untitled" : QFileInfo(currentPath_).baseName();
+
+  QString newName = QInputDialog::getText(this, "Rename Document",
+                                          "Enter new name:", QLineEdit::Normal,
+                                          oldName, &ok);
+  if (ok && !newName.isEmpty())
+  {
+    if (currentPath_.isEmpty())
+    {
+      // If it's a brand new file, just update the title for now
+      setWindowTitle(newName + " — Vellum");
     }
+    else
+    {
+      // Physically rename the file on disk
+      QFile file(currentPath_);
+      QFileInfo info(currentPath_);
+      QString newPath = info.absolutePath() + "/" + newName + ".vellum";
+
+      if (file.rename(newPath))
+      {
+        setCurrentPath(newPath);
+      }
+      else
+      {
+        QMessageBox::warning(this, "Rename Failed", "Could not rename file. It might be open elsewhere.");
+      }
+    }
+  }
 }
 
 bool MainWindow::saveDocumentAs()
@@ -499,7 +512,8 @@ void MainWindow::updateWindowTitle()
   setWindowTitle(QString("%1 — Vellum").arg(name));
 
   // Update our custom button in the blue bar
-  if (titleBtn_) {
-      titleBtn_->setText(name);
+  if (titleBtn_)
+  {
+    titleBtn_->setText(name);
   }
 }

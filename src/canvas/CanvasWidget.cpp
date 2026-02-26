@@ -98,6 +98,52 @@ void CanvasWidget::setViewMode(ViewMode mode)
     update();
 }
 
+void CanvasWidget::drawPages(QPainter &p) const {
+    // 1. Background (Desktop/Workspace)
+    p.fillRect(rect(), QColor("#ececec")); 
+
+    // 2. Page Dimensions (A4 roughly 595x842 points)
+    QRectF pageWorld(0, 0, 595, 842);
+    QRectF pageView = QRectF(worldToView(pageWorld.topLeft()), worldToView(pageWorld.bottomRight()));
+    
+    // 3. Page Shadow
+    p.setBrush(QColor(0, 0, 0, 30)); 
+    p.setPen(Qt::NoPen);
+    p.drawRoundedRect(pageView.translated(4, 4), 2, 2);
+
+    // 4. Page Surface
+    p.setBrush(Qt::white);
+    p.setPen(QPen(QColor("#dcdcdc"), 1));
+    p.drawRect(pageView);
+
+    // 5. DRAW THE GRID
+    if (pageType_ == PageType::Grid) {
+        p.save();
+        // Set a clipping region so lines don't bleed onto the "desktop"
+        p.setClipRect(pageView);
+        
+        // Use a very light blue or gray for the grid lines
+        p.setPen(QPen(QColor("#e0f0f5"), 0.5)); 
+        
+        double step = 25.0; // The size of each grid square in world units
+        
+        // Vertical lines
+        for (double x = step; x < pageWorld.width(); x += step) {
+            QPointF p1 = worldToView(QPointF(x, 0));
+            QPointF p2 = worldToView(QPointF(x, pageWorld.height()));
+            p.drawLine(p1, p2);
+        }
+        
+        // Horizontal lines
+        for (double y = step; y < pageWorld.height(); y += step) {
+            QPointF p1 = worldToView(QPointF(0, y));
+            QPointF p2 = worldToView(QPointF(pageWorld.width(), y));
+            p.drawLine(p1, p2);
+        }
+        p.restore();
+    }
+}
+
 void CanvasWidget::setPenColor(const QColor &c)
 {
     penColor_ = c;
@@ -434,21 +480,21 @@ void CanvasWidget::tabletEvent(QTabletEvent *e)
     QWidget::tabletEvent(e);
 }
 
-void CanvasWidget::drawPages(QPainter &p) const {
-    // Background (Desktop)
-    p.fillRect(rect(), QColor("#ececec")); 
+// void CanvasWidget::drawPages(QPainter &p) const {
+//     // Background (Desktop)
+//     p.fillRect(rect(), QColor("#ececec")); 
 
-    // Page Shadow
-    QRectF pageRect(worldToView(QPointF(0,0)), worldToView(QPointF(595, 842)));
-    p.setBrush(QColor(0, 0, 0, 30)); // Soft shadow
-    p.setPen(Qt::NoPen);
-    p.drawRoundedRect(pageRect.translated(4, 4), 2, 2);
+//     // Page Shadow
+//     QRectF pageRect(worldToView(QPointF(0,0)), worldToView(QPointF(595, 842)));
+//     p.setBrush(QColor(0, 0, 0, 30)); // Soft shadow
+//     p.setPen(Qt::NoPen);
+//     p.drawRoundedRect(pageRect.translated(4, 4), 2, 2);
 
-    // Page Surface
-    p.setBrush(Qt::white);
-    p.setPen(QPen(QColor("#dcdcdc"), 1));
-    p.drawRect(pageRect);
-}
+//     // Page Surface
+//     p.setBrush(Qt::white);
+//     p.setPen(QPen(QColor("#dcdcdc"), 1));
+//     p.drawRect(pageRect);
+// }
 void CanvasWidget::drawStrokes(QPainter &p) const
 {
     auto drawS = [&](const Stroke &s)
@@ -538,10 +584,19 @@ void CanvasWidget::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
-    if (viewMode_ == ViewMode::A4Notebook)
-        drawPages(p);
-    else
+
+    if (viewMode_ == ViewMode::A4Notebook) {
+        drawPages(p); // This handles the gray background AND the white page AND the grid
+    } else {
+        // Infinite mode: just a plain background
         p.fillRect(rect(), palette().color(QPalette::Base));
+        
+        // OPTIONAL: If you want the grid in infinite mode too, call a grid drawer here
+        // if (pageType_ == PageType::Grid) {
+        //     drawInfiniteGrid(p); 
+        // }
+    }
+
     drawStrokes(p);
     drawTextBoxes(p);
 }
